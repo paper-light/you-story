@@ -1,3 +1,4 @@
 export { pb } from './pb';
-export * from './pocketbase-types';
 export { setPBCookie } from './set-cookie';
+export * from './pocketbase-types';
+export * from './expands';

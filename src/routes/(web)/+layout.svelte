@@ -61,7 +61,7 @@
 			</nav>
 			<aside>
 				<h6 class="footer-title">YouStory</h6>
-				<p class="text-base-content/70">© 2024 YouStory. All rights reserved.</p>
+				<p class="text-base-content/70">© 2025 YouStory. All rights reserved.</p>
 			</aside>
 		</footer>
 	</div>

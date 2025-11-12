@@ -10,14 +10,16 @@
 					<Shield class="h-10 w-10 text-primary" />
 				</div>
 				<h1 class="mb-4 text-4xl font-bold text-base-content sm:text-5xl">Privacy Policy</h1>
-				<p class="text-xl text-base-content/70">Last updated: December 2024</p>
+				<p class="text-xl text-base-content/70">Last updated: November 2025</p>
 			</div>
 		</div>
 	</section>
 
 	<section class="py-16">
 		<div class="container mx-auto px-4 sm:px-6 lg:px-8">
-			<div class="prose prose-lg mx-auto max-w-4xl prose-headings:text-base-content prose-p:text-base-content/80 prose-strong:text-base-content">
+			<div
+				class="mx-auto prose prose-lg max-w-4xl prose-headings:text-base-content prose-p:text-base-content/80 prose-strong:text-base-content"
+			>
 				<div class="mb-8 rounded-lg bg-base-200 p-6">
 					<div class="mb-4 flex items-center gap-3">
 						<Lock class="h-6 w-6 text-primary" />
@@ -25,16 +27,16 @@
 					</div>
 					<p class="m-0 text-lg">
 						At YouStory, we are committed to protecting your privacy and ensuring the security of
-						your personal data. This Privacy Policy explains how we collect, use, and safeguard
-						your information.
+						your personal data. This Privacy Policy explains how we collect, use, and safeguard your
+						information.
 					</p>
 				</div>
 
 				<h2>Information We Collect</h2>
 				<p>
 					We collect information that you provide directly to us, including account registration
-					details, story content, character information, and preferences. All story content is stored
-					securely and encrypted.
+					details, story content, character information, and preferences. All story content is
+					stored securely and encrypted.
 				</p>
 
 				<h2>How We Use Your Information</h2>
@@ -88,8 +90,8 @@
 				<h2>Cookies and Tracking</h2>
 				<p>
 					We use cookies and similar tracking technologies to enhance your experience, analyze usage
-					patterns, and improve our services. You can control cookie preferences through your browser
-					settings.
+					patterns, and improve our services. You can control cookie preferences through your
+					browser settings.
 				</p>
 
 				<h2>Changes to This Policy</h2>

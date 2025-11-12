@@ -9,17 +9,17 @@
 				<div class="mb-6 inline-flex items-center justify-center rounded-full bg-primary/10 p-4">
 					<FileText class="h-10 w-10 text-primary" />
 				</div>
-				<h1 class="mb-4 text-4xl font-bold text-base-content sm:text-5xl">
-					Terms and Conditions
-				</h1>
-				<p class="text-xl text-base-content/70">Last updated: December 2024</p>
+				<h1 class="mb-4 text-4xl font-bold text-base-content sm:text-5xl">Terms and Conditions</h1>
+				<p class="text-xl text-base-content/70">Last updated: November 2025</p>
 			</div>
 		</div>
 	</section>
 
 	<section class="py-16">
 		<div class="container mx-auto px-4 sm:px-6 lg:px-8">
-			<div class="prose prose-lg mx-auto max-w-4xl prose-headings:text-base-content prose-p:text-base-content/80 prose-strong:text-base-content">
+			<div
+				class="mx-auto prose prose-lg max-w-4xl prose-headings:text-base-content prose-p:text-base-content/80 prose-strong:text-base-content"
+			>
 				<div class="mb-8 rounded-lg bg-base-200 p-6">
 					<div class="mb-4 flex items-center gap-3">
 						<Scale class="h-6 w-6 text-primary" />
@@ -32,7 +32,9 @@
 				</div>
 
 				<h2>Acceptable Use</h2>
-				<p>You agree to use YouStory only for lawful purposes and in accordance with these Terms.</p>
+				<p>
+					You agree to use YouStory only for lawful purposes and in accordance with these Terms.
+				</p>
 				<p>You agree not to:</p>
 				<ul>
 					<li>Use the service to create content that violates any applicable laws</li>
@@ -49,16 +51,16 @@
 					</div>
 					<p class="m-0 text-lg">
 						You retain all rights to the content you create on YouStory. You are solely responsible
-						for the content you create and ensure it complies with these Terms. We reserve the
-						right to remove content that violates our policies.
+						for the content you create and ensure it complies with these Terms. We reserve the right
+						to remove content that violates our policies.
 					</p>
 				</div>
 
 				<h2>Account Responsibility</h2>
 				<p>
-					You are responsible for maintaining the confidentiality of your account credentials and for
-					all activities that occur under your account. You agree to notify us immediately of any
-					unauthorized use of your account.
+					You are responsible for maintaining the confidentiality of your account credentials and
+					for all activities that occur under your account. You agree to notify us immediately of
+					any unauthorized use of your account.
 				</p>
 
 				<h2>Service Availability</h2>
@@ -82,8 +84,8 @@
 				<h2>Intellectual Property</h2>
 				<p>
 					The YouStory platform, including its design, features, and functionality, is owned by us
-					and protected by intellectual property laws. You may not copy, modify, or create derivative
-					works based on our platform without our express written permission.
+					and protected by intellectual property laws. You may not copy, modify, or create
+					derivative works based on our platform without our express written permission.
 				</p>
 
 				<h2>Termination</h2>
