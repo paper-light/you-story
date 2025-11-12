@@ -156,6 +156,7 @@ export type MessagesRecord<Tmetadata = unknown> = {
 
 export type StoriesRecord<Tbible = unknown> = {
 	bible?: null | Tbible
+	cover?: FileNameString
 	created: IsoAutoDateString
 	description?: string
 	id: string

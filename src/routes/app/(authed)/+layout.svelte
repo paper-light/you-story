@@ -10,7 +10,8 @@
 		Settings,
 		ChevronLeft,
 		ChevronRight,
-		Heart
+		Heart,
+		Book
 	} from 'lucide-svelte';
 
 	import { uiStore } from '$lib/shared/ui/ui.svelte';
@@ -30,7 +31,7 @@
 
 	const navItems = [
 		{ path: '/app/stories/new', icon: Plus, label: 'New Story' },
-		{ path: '/app', icon: House, label: 'Home' },
+		{ path: '/app/stories', icon: Book, label: 'Stories' },
 		{ path: '/app/characters', icon: Users, label: 'Characters' }
 	];
 
@@ -38,7 +39,7 @@
 		const { user, sub, stories, characters } = await globalPromise;
 		if (user) userStore.user = user;
 		if (sub) subStore.sub = sub;
-		if (stories) storiesStore.stories = stories;
+		if (stories) storiesStore.setStories(stories);
 		if (characters) charactersStore.setCharacters(characters);
 	});
 
@@ -171,8 +172,8 @@
 		</main>
 
 		<footer class="mobile-dock-footer dock dock-sm z-50 sm:hidden">
-			<a href="/app" data-sveltekit-preload-data="tap" class="dock-item">
-				<House class={page.url.pathname === '/app' ? 'text-primary' : 'text-neutral'} />
+			<a href="/app/stories" data-sveltekit-preload-data="tap" class="dock-item">
+				<Book class={page.url.pathname === '/app' ? 'text-primary' : 'text-neutral'} />
 			</a>
 			<a href="/app/characters" data-sveltekit-preload-data="tap" class="dock-item">
 				<Users class={page.url.pathname === '/app/characters' ? 'text-primary' : 'text-neutral'} />

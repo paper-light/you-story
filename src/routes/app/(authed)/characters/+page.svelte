@@ -30,7 +30,14 @@
 
 <div class="flex h-full flex-col">
 	<div class="mb-6 flex shrink-0 items-center justify-between">
-		<h1 class="text-3xl font-bold">Characters</h1>
+		<div>
+			<h1 class="text-3xl font-bold">Characters</h1>
+			<p class="mt-1 text-sm text-base-content/60">
+				{characters.length === 0
+					? 'No characters yet'
+					: `${characters.length} ${characters.length === 1 ? 'character' : 'characters'}`}
+			</p>
+		</div>
 		<Button onclick={openCreateModal} color="primary">
 			<Plus class="size-5" />
 			<span>New Character</span>
