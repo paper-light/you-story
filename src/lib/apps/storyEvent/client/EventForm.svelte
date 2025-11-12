@@ -7,14 +7,45 @@
 		description?: string;
 		characters?: string[];
 		disabled?: boolean;
+		isDirty?: boolean;
 	}
 
 	let {
 		name = $bindable(''),
 		description = $bindable(''),
 		characters = $bindable([]),
-		disabled = false
+		disabled = false,
+		isDirty = $bindable(false)
 	}: Props = $props();
+
+	// Initial values for dirty tracking
+	let initialName = $state('');
+	let initialDescription = $state('');
+	let initialCharacters = $state<string[]>([]);
+
+	// Track dirty state
+	$effect(() => {
+		const charactersChanged =
+			characters.length !== initialCharacters.length ||
+			characters.some((id) => !initialCharacters.includes(id)) ||
+			initialCharacters.some((id) => !characters.includes(id));
+
+		isDirty = name !== initialName || description !== initialDescription || charactersChanged;
+	});
+
+	// Function to reset dirty tracking with new initial values
+	export function resetDirtyTracking() {
+		initialName = name;
+		initialDescription = description;
+		initialCharacters = [...characters];
+	}
+
+	// Initialize on mount
+	$effect(() => {
+		if (initialName === '' && name !== '') {
+			resetDirtyTracking();
+		}
+	});
 
 	const availableCharacters = $derived(charactersStore.characters);
 	const eventNameId = 'event-name-input';
@@ -71,7 +102,7 @@
 				No characters available. Create them first in the Characters section.
 			</div>
 		{:else}
-			<div class="space-y-2">
+			<div class="max-h-90 space-y-2 overflow-y-auto">
 				{#each availableCharacters as character}
 					<label
 						class={[

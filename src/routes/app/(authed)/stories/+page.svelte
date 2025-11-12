@@ -12,7 +12,7 @@
 	}
 
 	function handleStoryClick(story: StoriesResponse) {
-		goto(`/app/stories/${story.id}`);
+		goto(`/app/stories/${story.id}/events`);
 	}
 </script>
 

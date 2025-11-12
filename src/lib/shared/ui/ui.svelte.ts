@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { browser } from '$app/environment';
 
 const UIStateSchema = z.object({
 	paywallOpen: z.boolean().default(false),
@@ -10,7 +11,7 @@ type UIState = z.infer<typeof UIStateSchema>;
 
 class UIStore {
 	private _state: UIState | null = $state(
-		UIStateSchema.parse(JSON.parse(localStorage.getItem('uiState') || '{}'))
+		UIStateSchema.parse(JSON.parse(browser ? (localStorage.getItem('uiState') ?? '{}') : '{}'))
 	);
 
 	paywallOpen = $derived(this._state?.paywallOpen);

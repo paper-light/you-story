@@ -2,5 +2,5 @@
 </script>
 
 <div>
-	<h1>Story</h1>
+	<h1>Event Chats</h1>
 </div>

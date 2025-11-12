@@ -101,9 +101,9 @@
 
 	<!-- Forms Grid -->
 	<div class="flex-1 overflow-y-auto">
-		<div class="grid gap-6 lg:grid-cols-2">
+		<div class="grid gap-6 lg:grid-cols-5">
 			<!-- Story Section -->
-			<div class="space-y-3">
+			<div class="col-span-3 space-y-3 p-2">
 				<div class="flex items-center gap-2">
 					<div class="h-8 w-1 rounded-full bg-primary"></div>
 					<h2 class="text-lg font-semibold">Story Details</h2>
@@ -120,7 +120,7 @@
 			</div>
 
 			<!-- Event Section -->
-			<div class="space-y-3">
+			<div class="col-span-2 space-y-3 p-2">
 				<div class="flex items-center gap-2">
 					<div class="h-8 w-1 rounded-full bg-secondary"></div>
 					<h2 class="text-lg font-semibold">Opening Event</h2>
