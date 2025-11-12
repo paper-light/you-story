@@ -1,5 +1,5 @@
 import type { SubsResponse } from './pocketbase-types';
 
 export type UserExpand = {
-	subs_via_users: SubsResponse[] | undefined;
+	subs_via_user: SubsResponse[] | undefined;
 };

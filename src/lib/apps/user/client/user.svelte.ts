@@ -6,6 +6,8 @@ class UserStore {
 	user: UsersResponse<unknown> | null = $state(null);
 	token: string | null = $state(null);
 
+	avatarUrl = $derived(this.user?.avatar ? pb?.files.getURL(this.user, this.user.avatar) : null);
+
 	// sender: Sender = $derived({
 	// 	id: this.user?.id || '',
 	// 	avatar: this.user?.avatar

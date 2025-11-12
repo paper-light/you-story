@@ -1,7 +1,7 @@
 <script lang="ts">
 	import '../app.css';
 	import '$lib/apps/user/client/pb-hook';
-	import favicon from '$lib/shared/assets/favicon.svg';
+	import favicon from '$lib/shared/assets/favicon_io/favicon.ico';
 	import { ThemeLoad } from '$lib/shared/ui';
 
 	let { children } = $props();

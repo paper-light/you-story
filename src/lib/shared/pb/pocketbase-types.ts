@@ -11,6 +11,12 @@ export enum Collections {
 	Mfas = "_mfas",
 	Otps = "_otps",
 	Superusers = "_superusers",
+	CharacterDiffs = "characterDiffs",
+	Characters = "characters",
+	EventChats = "eventChats",
+	Messages = "messages",
+	Stories = "stories",
+	StoryEvents = "storyEvents",
 	Subs = "subs",
 	Users = "users",
 }
@@ -93,6 +99,83 @@ export type SuperusersRecord = {
 	verified?: boolean
 }
 
+export type CharacterDiffsRecord<Tpatch = unknown> = {
+	character?: RecordIdString
+	created: IsoAutoDateString
+	description?: string
+	id: string
+	patch?: null | Tpatch
+	storyEvent?: RecordIdString
+	updated: IsoAutoDateString
+}
+
+export type CharactersRecord = {
+	age?: number
+	avatar?: FileNameString
+	created: IsoAutoDateString
+	description?: string
+	id: string
+	name?: string
+	updated: IsoAutoDateString
+	user?: RecordIdString
+}
+
+export enum EventChatsCommitModeOptions {
+	"noncanonical" = "noncanonical",
+	"proposeDiffs" = "proposeDiffs",
+	"autoCommit" = "autoCommit",
+}
+export type EventChatsRecord = {
+	commitMode?: EventChatsCommitModeOptions
+	created: IsoAutoDateString
+	id: string
+	povCharacter?: RecordIdString
+	storyEvent?: RecordIdString
+	updated: IsoAutoDateString
+}
+
+export enum MessagesRoleOptions {
+	"user" = "user",
+	"ai" = "ai",
+}
+
+export enum MessagesStatusOptions {
+	"streaming" = "streaming",
+	"optimistic" = "optimistic",
+	"final" = "final",
+}
+export type MessagesRecord<Tmetadata = unknown> = {
+	content?: string
+	created: IsoAutoDateString
+	id: string
+	metadata?: null | Tmetadata
+	role?: MessagesRoleOptions
+	status?: MessagesStatusOptions
+	updated: IsoAutoDateString
+}
+
+export type StoriesRecord<Tbible = unknown> = {
+	bible?: null | Tbible
+	created: IsoAutoDateString
+	description?: string
+	id: string
+	name?: string
+	updated: IsoAutoDateString
+	user?: RecordIdString
+}
+
+export type StoryEventsRecord = {
+	characters?: RecordIdString[]
+	created: IsoAutoDateString
+	description?: string
+	id: string
+	name?: string
+	order?: number
+	prevEventDiff?: string
+	story?: RecordIdString
+	updated: IsoAutoDateString
+}
+
 export enum SubsTariffOptions {
 	"free" = "free",
 	"plus" = "plus",
@@ -143,6 +226,12 @@ export type ExternalauthsResponse<Texpand = unknown> = Required<ExternalauthsRec
 export type MfasResponse<Texpand = unknown> = Required<MfasRecord> & BaseSystemFields<Texpand>
 export type OtpsResponse<Texpand = unknown> = Required<OtpsRecord> & BaseSystemFields<Texpand>
 export type SuperusersResponse<Texpand = unknown> = Required<SuperusersRecord> & AuthSystemFields<Texpand>
+export type CharacterDiffsResponse<Tpatch = unknown, Texpand = unknown> = Required<CharacterDiffsRecord<Tpatch>> & BaseSystemFields<Texpand>
+export type CharactersResponse<Texpand = unknown> = Required<CharactersRecord> & BaseSystemFields<Texpand>
+export type EventChatsResponse<Texpand = unknown> = Required<EventChatsRecord> & BaseSystemFields<Texpand>
+export type MessagesResponse<Tmetadata = unknown, Texpand = unknown> = Required<MessagesRecord<Tmetadata>> & BaseSystemFields<Texpand>
+export type StoriesResponse<Tbible = unknown, Texpand = unknown> = Required<StoriesRecord<Tbible>> & BaseSystemFields<Texpand>
+export type StoryEventsResponse<Texpand = unknown> = Required<StoryEventsRecord> & BaseSystemFields<Texpand>
 export type SubsResponse<Texpand = unknown> = Required<SubsRecord> & BaseSystemFields<Texpand>
 export type UsersResponse<Texpand = unknown> = Required<UsersRecord> & AuthSystemFields<Texpand>
 
@@ -154,6 +243,12 @@ export type CollectionRecords = {
 	_mfas: MfasRecord
 	_otps: OtpsRecord
 	_superusers: SuperusersRecord
+	characterDiffs: CharacterDiffsRecord
+	characters: CharactersRecord
+	eventChats: EventChatsRecord
+	messages: MessagesRecord
+	stories: StoriesRecord
+	storyEvents: StoryEventsRecord
 	subs: SubsRecord
 	users: UsersRecord
 }
@@ -164,6 +259,12 @@ export type CollectionResponses = {
 	_mfas: MfasResponse
 	_otps: OtpsResponse
 	_superusers: SuperusersResponse
+	characterDiffs: CharacterDiffsResponse
+	characters: CharactersResponse
+	eventChats: EventChatsResponse
+	messages: MessagesResponse
+	stories: StoriesResponse
+	storyEvents: StoryEventsResponse
 	subs: SubsResponse
 	users: UsersResponse
 }
