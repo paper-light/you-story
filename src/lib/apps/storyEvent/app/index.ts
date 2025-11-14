@@ -1,0 +1,1 @@
+export { storyEventApp } from './usecases';

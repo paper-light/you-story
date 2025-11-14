@@ -5,7 +5,7 @@
 	import { storyEventsStore, EventForm, StoryEventsTimeline } from '$lib/apps/storyEvent/client';
 	import { Button } from '$lib/shared/ui';
 	import { Save, ExternalLink, X } from 'lucide-svelte';
-	import type { StoryBible } from '$lib/apps/story/core/model';
+	import type { StoryBible } from '$lib/apps/story/core/models';
 
 	const storyId = $derived(page.params.storyId);
 	const story = $derived(storiesStore.stories.find((s) => s.id === storyId));

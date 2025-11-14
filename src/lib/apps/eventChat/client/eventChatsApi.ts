@@ -21,7 +21,6 @@ class EventChatsApi {
 		if (!dto.content) throw new Error('Content is required');
 
 		messagesStore.addOptimisticMessage(dto);
-		await pb.collection(Collections.Messages).create(dto);
 
 		const es = new EventSource(
 			`/api/stories/${storyId}/events/${eventId}/chats/${dto.chat}/sse?q=${encodeURIComponent(dto.content)}`,

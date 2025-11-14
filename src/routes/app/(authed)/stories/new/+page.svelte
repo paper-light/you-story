@@ -3,7 +3,7 @@
 	import { ArrowLeft, Sparkles } from 'lucide-svelte';
 	import { StoryForm, storiesApi, storiesStore } from '$lib/apps/story/client';
 	import { EventForm, storyEventsStore } from '$lib/apps/storyEvent/client';
-	import type { StoryBible } from '$lib/apps/story/core/model';
+	import type { StoryBible } from '$lib/apps/story/core/models';
 	import { userStore } from '$lib/apps/user/client';
 	import { Button } from '$lib/shared/ui';
 	import { storyEventsApi } from '$lib/apps/storyEvent/client/storyEventsApi';
@@ -63,7 +63,7 @@
 				order: 1
 			});
 
-			goto(`/app/stories/${story.id}`);
+			goto(`/app/stories/${story.id}/events`);
 		} catch (error) {
 			console.error('Failed to create story', error);
 			errorMessage =

@@ -1,56 +1,18 @@
-import { Collections, MessagesRoleOptions, MessagesStatusOptions, pb } from '$lib';
+import { eventChatApp } from '$lib/apps/eventChat/app';
+import { error } from '@sveltejs/kit';
 
-import { grok } from '$lib/shared/server';
-
-export const GET = async ({ params, url }) => {
-	const { chatId } = params;
+export const GET = async ({ params, url, locals }) => {
+	const { storyId, eventId, chatId } = params;
 	const query = url.searchParams.get('q') || '';
 
-	const aiMsg = await pb.collection(Collections.Messages).create({
-		chat: chatId,
-		content: '',
-		role: MessagesRoleOptions.ai,
-		status: MessagesStatusOptions.streaming
-	});
+	if (!locals.user) throw error(401, 'Unauthorized');
 
-	const stream = new ReadableStream({
-		async start(controller) {
-			const encoder = new TextEncoder();
-			const sendEvent = (event: string, data: string) => {
-				controller.enqueue(encoder.encode(`event: ${event}\n`));
-				controller.enqueue(encoder.encode(`data: ${data}\n\n`));
-			};
-
-			let accumulatedText = '';
-
-			try {
-				const completion = await grok.chat.completions.create({
-					model: 'grok-4-fast-non-reasoning',
-					messages: [{ role: 'user', content: query }],
-					stream: true
-				});
-
-				for await (const chunk of completion) {
-					accumulatedText += chunk.choices[0].delta.content || '';
-					sendEvent(
-						'chunk',
-						JSON.stringify({
-							text: chunk.choices[0].delta.content || '',
-							msgId: aiMsg.id
-						})
-					);
-				}
-
-				await pb.collection(Collections.Messages).update(aiMsg.id, {
-					status: MessagesStatusOptions.final,
-					content: accumulatedText
-				});
-				sendEvent('done', aiMsg.id);
-			} catch (error) {
-				sendEvent('error', JSON.stringify({ error: String(error) }));
-			}
-			controller.close();
-		}
+	const stream = await eventChatApp.sendUserMessage({
+		user: locals.user,
+		storyId,
+		eventId,
+		chatId,
+		query
 	});
 
 	return new Response(stream, {

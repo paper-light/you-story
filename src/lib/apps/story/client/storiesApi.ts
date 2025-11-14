@@ -1,6 +1,6 @@
 import { pb, type StoriesResponse, type Create, type Update, Collections } from '$lib';
 
-import type { StoryBible } from '../core/model';
+import type { StoryBible } from '../core/models';
 
 class StoriesApi {
 	async create(
