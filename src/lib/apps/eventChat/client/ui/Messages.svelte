@@ -3,11 +3,9 @@
 	import type { ClassValue } from 'svelte/elements';
 	import { fade } from 'svelte/transition';
 
-	import { Button, scrollToBottom } from '$lib/shared/ui';
+	import { Button, scrollToBottom, type MessagesResponse } from '$lib';
+	import type { Sender } from '$lib/apps/eventChat/core';
 
-	import type { MessagesResponse } from '$lib';
-
-	import type { Sender } from './Message.svelte';
 	import Message from './Message.svelte';
 
 	interface Props {
@@ -22,8 +20,10 @@
 	let messagesContainer: HTMLElement | null = $state(null);
 	let showScrollButton = $state(false);
 
+	let lastLength = 0;
 	$effect(() => {
-		if (messages.length > 0) setTimeout(() => scrollToBottom(messagesContainer), 100);
+		if (messages.length > lastLength) setTimeout(() => scrollToBottom(messagesContainer), 100);
+		lastLength = messages.length;
 	});
 
 	function onscroll() {

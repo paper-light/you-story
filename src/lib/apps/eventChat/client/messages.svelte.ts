@@ -16,15 +16,15 @@ class MessagesStore {
 	}
 
 	addChunk(chunk: MessageChunk) {
-		const msg = this.getById(chunk.msg_id);
+		const msg = this.getById(chunk.msgId);
 		if (!msg || msg.status !== 'streaming') return;
 
 		// const nextI = chunk.i ?? ((msg as any)._last_i ?? 0) + 1;
 		// if ((msg as any)._last_i && nextI <= (msg as any)._last_i) return;
 		// (msg as any)._last_i = nextI;
 
-		msg.content = (msg.content || '') + chunk.text;
-		this._messages = this._messages.map((m) => (m.id === msg.id ? msg : m));
+		const newMsg = { ...msg, content: msg.content + chunk.text };
+		this._messages = this._messages.map((m) => (m.id === msg.id ? newMsg : m));
 	}
 
 	async load(chatId: string) {

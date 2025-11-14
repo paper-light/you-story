@@ -1,18 +1,18 @@
 import { Collections, MessagesRoleOptions, MessagesStatusOptions, pb } from '$lib';
 
+import { grok } from '$lib/shared/server';
+
 export const GET = async ({ params, url }) => {
-	const { storyId, eventId, chatId } = params;
-	console.log(storyId, eventId, chatId);
+	const { chatId } = params;
 	const query = url.searchParams.get('q') || '';
 
 	const aiMsg = await pb.collection(Collections.Messages).create({
 		chat: chatId,
-		content: query,
+		content: '',
 		role: MessagesRoleOptions.ai,
 		status: MessagesStatusOptions.streaming
 	});
 
-	// Create a readable stream for SSE
 	const stream = new ReadableStream({
 		async start(controller) {
 			const encoder = new TextEncoder();
@@ -21,28 +21,26 @@ export const GET = async ({ params, url }) => {
 				controller.enqueue(encoder.encode(`data: ${data}\n\n`));
 			};
 
+			let accumulatedText = '';
+
 			try {
-				// Simulate streaming response - send chunks of text
-				const words = query.split(' ') || ['Hello', 'from', 'SSE', 'test'];
-				let accumulatedText = '';
+				const completion = await grok.chat.completions.create({
+					model: 'grok-4-fast-non-reasoning',
+					messages: [{ role: 'user', content: query }],
+					stream: true
+				});
 
-				for (let i = 0; i < words.length; i++) {
-					const word = words[i];
-					accumulatedText += (i > 0 ? ' ' : '') + word;
-
-					const chunk = {
-						text: (i > 0 ? ' ' : '') + word,
-						msg_id: `temp-${Date.now()}`,
-						i: i
-					};
-
-					sendEvent('chunk', JSON.stringify(chunk));
-
-					// Simulate delay between chunks
-					await new Promise((resolve) => setTimeout(resolve, 100));
+				for await (const chunk of completion) {
+					accumulatedText += chunk.choices[0].delta.content || '';
+					sendEvent(
+						'chunk',
+						JSON.stringify({
+							text: chunk.choices[0].delta.content || '',
+							msgId: aiMsg.id
+						})
+					);
 				}
 
-				// Send done event
 				await pb.collection(Collections.Messages).update(aiMsg.id, {
 					status: MessagesStatusOptions.final,
 					content: accumulatedText
@@ -50,9 +48,8 @@ export const GET = async ({ params, url }) => {
 				sendEvent('done', aiMsg.id);
 			} catch (error) {
 				sendEvent('error', JSON.stringify({ error: String(error) }));
-			} finally {
-				controller.close();
 			}
+			controller.close();
 		}
 	});
 

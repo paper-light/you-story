@@ -7,6 +7,6 @@ export type Sender = {
 
 export type MessageChunk = {
 	text: string;
-	msg_id: string;
+	msgId: string;
 	i?: number;
 };

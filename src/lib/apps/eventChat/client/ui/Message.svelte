@@ -7,7 +7,7 @@
 	import type { ClassValue } from 'svelte/elements';
 
 	import userImageDefault from '$lib/shared/assets/images/pchel.png';
-	
+
 	import type { MessagesResponse } from '$lib';
 
 	import type { Sender } from '$lib/apps/eventChat/core';
@@ -35,9 +35,7 @@
 		ADD_ATTR: ['target', 'rel']
 	});
 
-	// Check if this is an AI message waiting for response (incoming = true means AI message)
-	const isWaitingForResponse =
-		incoming && (!msg.content || msg.content.trim() === '') && msg.status === 'streaming';
+	const isWaitingForResponse = incoming && msg.content.trim() === '' && msg.status === 'streaming';
 </script>
 
 <!-- DIVIDER HAS COMPLETELY DIFFERENT UI -->
