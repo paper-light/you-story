@@ -6,7 +6,8 @@
 	import { Bot } from 'lucide-svelte';
 	import type { ClassValue } from 'svelte/elements';
 
-	import userImageDefault from '$lib/assets/images/user.png';
+	import userImageDefault from '$lib/shared/assets/images/pchel.png';
+	
 	import type { MessagesResponse } from '$lib';
 
 	import type { Sender } from '$lib/apps/eventChat/core';

@@ -65,7 +65,7 @@
 			</div>
 		{:else}
 			<!-- Create before first event -->
-			<button
+			<!-- <button
 				onclick={handleCreateFirst}
 				class={[
 					'flex w-full items-center justify-center gap-2 rounded-lg border-2 border-dashed p-2 text-sm transition-all',
@@ -76,7 +76,7 @@
 			>
 				<Plus class="size-4" />
 				<span>Create Event</span>
-			</button>
+			</button> -->
 
 			{#each events as event, index (event.id)}
 				<StoryEventItem
@@ -88,7 +88,7 @@
 				<button
 					onclick={() => handleCreateAfter(event, index)}
 					class={[
-						'flex w-full items-center justify-center gap-2 rounded-lg border-2 border-dashed p-2 text-sm transition-all',
+						'flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg border-2 border-dashed p-2 text-sm transition-all',
 						isCreatingNew && selectedEventId === event.id
 							? 'border-primary bg-primary/10 text-primary'
 							: 'border-base-300 text-base-content/50 hover:border-primary/50 hover:bg-base-200 hover:text-primary'

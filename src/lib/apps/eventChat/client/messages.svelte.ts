@@ -29,7 +29,7 @@ class MessagesStore {
 
 	async load(chatId: string) {
 		const messages = await pb.collection(Collections.Messages).getFullList({
-			filter: `eventChat = "${chatId}"`,
+			filter: `chat = "${chatId}"`,
 			sort: 'created'
 		});
 		this.messages = messages;
@@ -66,7 +66,7 @@ class MessagesStore {
 				}
 			},
 			{
-				filter: `eventChat = "${eventChatId}"`
+				filter: `chat = "${eventChatId}"`
 			}
 		);
 	}

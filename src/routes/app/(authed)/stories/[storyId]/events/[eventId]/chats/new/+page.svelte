@@ -2,7 +2,7 @@
 	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
 	import { storyEventsStore } from '$lib/apps/storyEvent/client';
-	import { eventChatsStore, ChatForm } from '$lib/apps/eventChat/client';
+	import { eventChatsStore, ChatForm, eventChatsApi } from '$lib/apps/eventChat/client';
 	import { Button } from '$lib/shared/ui';
 	import { ArrowLeft, Rocket } from 'lucide-svelte';
 	import { EventChatsCommitModeOptions, EventChatsStatusOptions } from '$lib';
@@ -32,7 +32,7 @@
 		isCreating = true;
 
 		try {
-			const chat = await eventChatsStore.create({
+			const chat = await eventChatsApi.create({
 				storyEvent: eventId,
 				povCharacter,
 				commitMode,

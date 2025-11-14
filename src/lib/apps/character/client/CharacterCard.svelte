@@ -19,58 +19,44 @@
 	}
 </script>
 
-{#if onClick}
-	<button
-		onclick={handleClick}
-		class="card-bordered group card cursor-pointer bg-base-200 transition-colors hover:bg-base-300"
-	>
-		<figure class="px-6 pt-6">
-			<div class="avatar">
-				<div class="w-24 rounded-full ring ring-primary ring-offset-2 ring-offset-base-100">
-					<img
-						src={charactersStore.getCharacterAvatar(character)}
-						alt={character.name || 'Character'}
-					/>
-				</div>
+<svelte:element
+	this={onClick ? 'button' : 'div'}
+	type={onClick ? 'button' : undefined}
+	onclick={onClick ? handleClick : undefined}
+	aria-label={onClick ? 'Click to view character' : undefined}
+	role={onClick ? 'button' : undefined}
+	tabindex={onClick ? 0 : undefined}
+	class={[
+		'card-bordered card bg-base-200',
+		onClick ? 'group cursor-pointer transition-colors hover:bg-base-300' : ''
+	].join(' ')}
+>
+	<figure class="px-6 pt-6">
+		<div class="avatar">
+			<div class="w-24 rounded-full ring ring-primary ring-offset-2 ring-offset-base-100">
+				<img
+					src={charactersStore.getCharacterAvatar(character)}
+					alt={character.name || 'Character'}
+				/>
 			</div>
-		</figure>
-		<div class="card-body items-center text-center">
-			<h2 class="relative card-title">{character.name || 'Unnamed Character'}</h2>
-
-			{#if topRightAction}
-				<p class="absolute top-0 right-0">
-					{@render topRightAction()}
-				</p>
-			{/if}
-
-			{#if character.age !== undefined}
-				<p class="text-sm text-base-content/60">Age: {character.age}</p>
-			{/if}
-			{#if character.description}
-				<p class="line-clamp-2 text-sm text-base-content/60">{character.description}</p>
-			{/if}
 		</div>
-	</button>
-{:else}
-	<div class="card-bordered card bg-base-200">
-		<figure class="px-6 pt-6">
-			<div class="avatar">
-				<div class="w-24 rounded-full ring ring-primary ring-offset-2 ring-offset-base-100">
-					<img
-						src={charactersStore.getCharacterAvatar(character)}
-						alt={character.name || 'Character'}
-					/>
-				</div>
-			</div>
-		</figure>
-		<div class="card-body items-center text-center">
-			<h2 class="card-title">{character.name || 'Unnamed Character'}</h2>
-			{#if character.age !== undefined}
-				<p class="text-sm text-base-content/60">Age: {character.age}</p>
-			{/if}
-			{#if character.description}
-				<p class="line-clamp-2 text-sm text-base-content/60">{character.description}</p>
-			{/if}
-		</div>
+	</figure>
+	<div class="card-body items-center text-center">
+		<h2 class={onClick || topRightAction ? 'relative card-title' : 'card-title'}>
+			{character.name || 'Unnamed Character'}
+		</h2>
+
+		{#if topRightAction}
+			<p class="absolute top-0 right-0">
+				{@render topRightAction()}
+			</p>
+		{/if}
+
+		{#if character.age !== undefined}
+			<p class="text-sm text-base-content/60">Age: {character.age}</p>
+		{/if}
+		{#if character.description}
+			<p class="line-clamp-2 text-sm text-base-content/60">{character.description}</p>
+		{/if}
 	</div>
-{/if}
+</svelte:element>

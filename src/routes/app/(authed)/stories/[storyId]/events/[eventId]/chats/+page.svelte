@@ -5,6 +5,7 @@
 	import { eventChatsStore, EventChatsList } from '$lib/apps/eventChat/client';
 	import { Button } from '$lib/shared/ui';
 	import { Save, ArrowLeft } from 'lucide-svelte';
+	import { storyEventsApi } from '$lib/apps/storyEvent/client/storyEventsApi';
 
 	const storyId = $derived(page.params.storyId);
 	const eventId = $derived(page.params.eventId);
@@ -45,7 +46,7 @@
 		isSavingEvent = true;
 
 		try {
-			await storyEventsStore.update(event.id, {
+			await storyEventsApi.update(event.id, {
 				name: eventName,
 				description: eventDescription,
 				characters: eventCharacters

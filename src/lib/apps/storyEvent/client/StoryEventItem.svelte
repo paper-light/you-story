@@ -14,7 +14,7 @@
 <button
 	{onclick}
 	class={[
-		'group w-full rounded-lg border p-4 text-left transition-all',
+		'group w-full cursor-pointer rounded-lg border p-4 text-left transition-all',
 		isActive
 			? 'border-primary bg-primary/10 shadow-md'
 			: 'border-base-300 bg-base-100 hover:border-primary/50 hover:bg-base-200'

@@ -23,10 +23,14 @@
 	};
 </script>
 
-<button
+<!-- svelte-ignore a11y_no_static_element_interactions -->
+<svelte:element
+	this={onclick ? 'button' : 'div'}
+	type={onclick ? 'button' : undefined}
 	{onclick}
 	class={[
 		'group w-full rounded-lg border p-4 text-left transition-all',
+		onclick ? 'cursor-pointer' : '',
 		isActive
 			? 'border-primary bg-primary/10 shadow-md'
 			: 'border-base-300 bg-base-100 hover:border-primary/50 hover:bg-base-200'
@@ -74,4 +78,4 @@
 			</div>
 		</div>
 	</div>
-</button>
+</svelte:element>

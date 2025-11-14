@@ -1,14 +1,18 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
-	import { eventChatsStore } from '$lib/apps/eventChat/client';
+	import { eventChatsApi, eventChatsStore, messagesStore } from '$lib/apps/eventChat/client';
+	import Messages from '$lib/apps/eventChat/client/ui/Messages.svelte';
+	import MessageControls from '$lib/apps/eventChat/client/ui/MessageControls.svelte';
 	import { Button } from '$lib/shared/ui';
 	import { ArrowLeft, Save, MessageCircle } from 'lucide-svelte';
-	import { onMount } from 'svelte';
+	import { onMount, onDestroy } from 'svelte';
 	import {
 		type EventChatsResponse,
 		EventChatsCommitModeOptions,
-		EventChatsStatusOptions
+		EventChatsStatusOptions,
+		MessagesRoleOptions,
+		Collections
 	} from '$lib';
 
 	const storyId = $derived(page.params.storyId);
@@ -23,7 +27,25 @@
 	let isLoading = $state(true);
 	let isSaving = $state(false);
 
-	// Load chat data
+	// Messages
+	const messages = $derived(messagesStore.messages);
+
+	// Senders for Messages component
+	const userSender = $derived({
+		id: 'user',
+		name: 'You',
+		role: 'user' as const,
+		avatar: undefined
+	});
+
+	const assistantSender = $derived({
+		id: 'ai',
+		name: 'AI Assistant',
+		role: 'ai' as const,
+		avatar: undefined
+	});
+
+	// Load chat data and messages
 	onMount(async () => {
 		if (!chatId) {
 			isLoading = false;
@@ -53,7 +75,7 @@
 		isSaving = true;
 
 		try {
-			await eventChatsStore.update(chat.id, {
+			await eventChatsApi.update(chat.id, {
 				povCharacter,
 				commitMode,
 				status
@@ -63,6 +85,16 @@
 		} finally {
 			isSaving = false;
 		}
+	}
+
+	async function handleSendMessage(content: string) {
+		if (!chatId || !storyId || !eventId) return;
+
+		await eventChatsApi.sendMessage(storyId, eventId, {
+			chat: chatId,
+			content,
+			role: MessagesRoleOptions.user
+		});
 	}
 </script>
 
@@ -165,36 +197,19 @@
 		</div>
 
 		<!-- Chat Messages Area -->
-		<div class="flex-1 overflow-y-auto p-6">
-			<div
-				class="flex h-full items-center justify-center rounded-lg border-2 border-dashed border-base-300 bg-base-100 p-8"
-			>
-				<div class="text-center">
-					<div class="mb-4 inline-flex rounded-full bg-base-200 p-6">
-						<MessageCircle class="size-12 text-base-content/50" />
-					</div>
-					<h4 class="mb-2 text-lg font-semibold text-base-content">Chat Interface Coming Soon</h4>
-					<p class="text-sm text-base-content/60">
-						This is where the chat interface will be implemented.<br />
-						Messages, AI responses, and interactive storytelling will happen here.
-					</p>
+		<div class="flex-1 overflow-hidden">
+			{#if isLoading}
+				<div class="flex h-full items-center justify-center">
+					<span class="loading loading-lg loading-spinner"></span>
 				</div>
-			</div>
+			{:else}
+				<Messages {messages} {userSender} {assistantSender} class="h-full" />
+			{/if}
 		</div>
 
 		<!-- Chat Input Area -->
 		<div class="border-t border-base-300 p-4">
-			<div class="flex gap-2">
-				<input
-					type="text"
-					placeholder="Type your message... (coming soon)"
-					class="input-bordered input flex-1"
-					disabled
-				/>
-				<Button size="md" color="primary" disabled>
-					<span>Send</span>
-				</Button>
-			</div>
+			<MessageControls {messages} onSend={handleSendMessage} disabled={isLoading || !chat} />
 		</div>
 	</div>
 </div>
