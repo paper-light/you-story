@@ -6,8 +6,6 @@
 	import { Bot } from 'lucide-svelte';
 	import type { ClassValue } from 'svelte/elements';
 
-	import userImageDefault from '$lib/shared/assets/images/pchel.png';
-
 	import type { MessagesResponse } from '$lib';
 
 	import type { Sender } from '$lib/apps/eventChat/core';
@@ -46,15 +44,7 @@
 		{#if showHeader}
 			<div class="avatar chat-image">
 				<div class="size-10 overflow-hidden rounded-full">
-					{#if sender.role === 'ai'}
-						<Bot class="h-full w-full object-cover" />
-					{:else}
-						<img
-							alt={msg.role}
-							src={sender.avatar || userImageDefault}
-							class="h-full w-full object-cover"
-						/>
-					{/if}
+					<img alt={msg.role} src={sender.avatar} class="h-full w-full object-cover" />
 				</div>
 			</div>
 

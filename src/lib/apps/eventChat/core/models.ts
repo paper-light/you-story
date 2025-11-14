@@ -1,3 +1,4 @@
+import z from 'zod';
 import type { EventChatExpand, EventChatsResponse } from '$lib';
 
 export type Sender = {
@@ -12,6 +13,15 @@ export type MessageChunk = {
 	msgId: string;
 	i?: number;
 };
+
+export const SchemaSceneStep = z.object({
+	type: z.enum(['world', 'character']),
+	characterId: z.string().optional().nullable(),
+	description: z.string()
+});
+export const SchemaScenePlan = z.object({
+	steps: z.array(SchemaSceneStep)
+});
 
 export type Notes = string[];
 

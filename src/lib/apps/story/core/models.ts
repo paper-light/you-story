@@ -17,15 +17,22 @@ export class Story {
 
 	static fromResponse(res: StoriesResponse<StoryBible, StoryExpand>): Story {
 		const story = new Story(res, '');
-		story.buildPrompt();
 		return story;
 	}
 
-	buildPrompt() {
+	buildPrompt(lastEventOrder: number) {
+		const prevEvents = this.getEvents().filter((event) => event.order < lastEventOrder);
+		const eventPrompt = prevEvents
+			.map((event) => `Event: ${event.name}\nDescription: ${event.description}\n\n`)
+			.join('\n');
+
 		this.prompt = `
 Story: ${this.data.name}
 Description: ${this.data.description}
 Bible: ${JSON.stringify(this.data.bible)}
+
+Events:
+${eventPrompt || '<No previous events>'}
 `;
 	}
 }

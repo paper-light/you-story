@@ -40,14 +40,14 @@
 			: (userStore.avatarUrl ?? '')
 	});
 
-	const assistantSenders = $derived([
-		{
-			id: 'ai',
-			name: 'AI Assistant',
+	const assistantSenders = $derived(
+		chars.map((char) => ({
+			id: char.id,
+			name: char.name,
 			role: 'ai' as const,
-			avatar: userStore.avatarUrl ?? ''
-		}
-	]);
+			avatar: charactersStore.getCharacterAvatar(char)
+		}))
+	);
 
 	// Load chat data and messages
 	onMount(async () => {
@@ -84,7 +84,7 @@
 <div class="flex h-[calc(100vh-4rem)] gap-6 p-3">
 	<!-- Left Side: Chat Editor -->
 	<div
-		class="flex w-96 flex-col overflow-hidden rounded-xl border border-base-300 bg-base-100 shadow-sm"
+		class="hidden w-96 flex-col overflow-hidden rounded-xl border border-base-300 bg-base-100 shadow-sm md:flex"
 	>
 		<!-- Header -->
 		<div class="flex items-center gap-3 border-b border-base-300 p-6">

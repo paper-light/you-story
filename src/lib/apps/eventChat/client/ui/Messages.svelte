@@ -38,7 +38,7 @@
 	<div
 		bind:this={messagesContainer}
 		{onscroll}
-		class={['h-full space-y-2 overflow-y-auto overscroll-contain px-2 py-1']}
+		class={['h-full space-y-2 overflow-y-auto overscroll-contain px-4 py-1']}
 	>
 		{#if messages.length === 0}
 			<div class="flex h-full flex-col items-center justify-center text-center">

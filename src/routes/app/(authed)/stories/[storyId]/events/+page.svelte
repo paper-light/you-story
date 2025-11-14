@@ -1,8 +1,13 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
-	import { storiesStore, StoryHeader, StoryForm } from '$lib/apps/story/client';
-	import { storyEventsStore, EventForm, StoryEventsTimeline } from '$lib/apps/storyEvent/client';
+	import { storiesStore, StoryHeader, StoryForm, storiesApi } from '$lib/apps/story/client';
+	import {
+		storyEventsStore,
+		EventForm,
+		StoryEventsTimeline,
+		storyEventsApi
+	} from '$lib/apps/storyEvent/client';
 	import { Button } from '$lib/shared/ui';
 	import { Save, ExternalLink, X } from 'lucide-svelte';
 	import type { StoryBible } from '$lib/apps/story/core/models';
@@ -174,7 +179,7 @@
 		};
 
 		try {
-			await storiesStore.update(story.id, {
+			await storiesApi.update(story.id, {
 				name: storyName,
 				description: storyDescription,
 				cover: storyCoverFile ?? undefined,
@@ -206,8 +211,8 @@
 
 				const order = prevEventForNew ? (prevEventForNew.order ?? 0) + 1 : 1;
 
-				await storyEventsStore.createFirstEvent({
-					storyId,
+				await storyEventsApi.create({
+					story: storyId,
 					name: eventName,
 					description: eventDescription,
 					characters: eventCharacters,
@@ -222,7 +227,7 @@
 				isEventDirty = false;
 			} else if (selectedEvent) {
 				// Update existing event
-				await storyEventsStore.update(selectedEvent.id, {
+				await storyEventsApi.update(selectedEvent.id, {
 					name: eventName,
 					description: eventDescription,
 					characters: eventCharacters
