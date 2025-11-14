@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Plus, User } from 'lucide-svelte';
+	import { Plus, Trash, User } from 'lucide-svelte';
 	import type { CharactersResponse } from '$lib';
 	import { charactersStore, EditCharacter, CharacterCard } from '$lib/apps/character/client';
 	import { Button, Modal } from '$lib/shared/ui';
@@ -10,7 +10,7 @@
 	let isCreating = $derived(selectedCharacter === null && editModalOpen);
 	let modalOpen = $derived(editModalOpen && (selectedCharacter !== null || isCreating));
 
-	const characters = $derived(charactersStore.characters);
+	const characters = $derived(charactersStore.characters.filter((c) => !c.archived));
 
 	function openCreateModal() {
 		selectedCharacter = null;
@@ -25,6 +25,10 @@
 	function handleModalClose() {
 		selectedCharacter = null;
 		editModalOpen = false;
+	}
+
+	function handleArchiveCharacter(character: CharactersResponse) {
+		charactersStore.archive(character.id);
 	}
 </script>
 
@@ -58,7 +62,21 @@
 		<div class="flex-1 overflow-y-auto">
 			<div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
 				{#each characters as character}
-					<CharacterCard {character} onClick={openEditModal} />
+					<CharacterCard {character} onClick={openEditModal}>
+						{#snippet topRightAction()}
+							<Button
+								style="ghost"
+								color="error"
+								circle
+								onclick={(e) => {
+									e.stopPropagation();
+									handleArchiveCharacter(character);
+								}}
+							>
+								<Trash class="size-4" />
+							</Button>
+						{/snippet}
+					</CharacterCard>
 				{/each}
 			</div>
 		</div>

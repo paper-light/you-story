@@ -51,6 +51,13 @@ class CharactersStore {
 		return record as CharactersResponse;
 	}
 
+	async archive(id: string) {
+		const record = await pb!.collection('characters').update(id, {
+			archived: true
+		});
+		return record as CharactersResponse;
+	}
+
 	async subscribe() {
 		return pb!.collection('characters').subscribe('*', (e) => {
 			switch (e.action) {

@@ -1,15 +1,18 @@
 <script lang="ts">
+	import { Trash } from 'lucide-svelte';
+	import type { Snippet } from 'svelte';
+
 	import type { CharactersResponse } from '$lib';
-	import { pb } from '$lib';
+	import { Button } from '$lib/shared/ui';
 
 	import { charactersStore } from './characters.svelte';
-
 	interface Props {
 		character: CharactersResponse;
+		topRightAction?: Snippet;
 		onClick?: (character: CharactersResponse) => void;
 	}
 
-	let { character, onClick }: Props = $props();
+	let { character, onClick, topRightAction }: Props = $props();
 
 	function handleClick() {
 		onClick?.(character);
@@ -32,7 +35,14 @@
 			</div>
 		</figure>
 		<div class="card-body items-center text-center">
-			<h2 class="card-title">{character.name || 'Unnamed Character'}</h2>
+			<h2 class="relative card-title">{character.name || 'Unnamed Character'}</h2>
+
+			{#if topRightAction}
+				<p class="absolute top-0 right-0">
+					{@render topRightAction()}
+				</p>
+			{/if}
+
 			{#if character.age !== undefined}
 				<p class="text-sm text-base-content/60">Age: {character.age}</p>
 			{/if}

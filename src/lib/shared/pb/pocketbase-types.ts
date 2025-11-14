@@ -119,6 +119,7 @@ export type CanonicalPatchesRecord<Tpatch = unknown> = {
 
 export type CharactersRecord = {
 	age?: number
+	archived?: boolean
 	avatar?: FileNameString
 	created: IsoAutoDateString
 	description?: string
@@ -173,8 +174,8 @@ export enum MessagesRoleOptions {
 
 export enum MessagesStatusOptions {
 	"streaming" = "streaming",
-	"optimistic" = "optimistic",
 	"final" = "final",
+	"optimistic" = "optimistic",
 }
 export type MessagesRecord<Tmetadata = unknown> = {
 	content?: string
