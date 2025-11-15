@@ -1,3 +1,5 @@
+import type z from 'zod';
+
 import {
 	Collections,
 	MessagesRoleOptions,
@@ -19,17 +21,19 @@ import {
 	type Notes,
 	type SendUserMessageCmd,
 	EventChat,
-	type Storyteller
+	type ScenePlanner,
+	type ScenePerformer,
+	type OpenAIMessage
 } from '../core';
-import { storyteller } from '../adapters/storyteller';
+import { scenePlanner, scenePerformer } from '../adapters';
 import type { SchemaScenePlan } from '../core/models';
-import type z from 'zod';
 
 class EventChatAppImpl implements EventChatApp {
 	constructor(
 		private readonly storyApp: StoryApp,
 		private readonly storyEventApp: StoryEventApp,
-		private readonly storyteller: Storyteller
+		private readonly scenePlanner: ScenePlanner,
+		private readonly scenePerformer: ScenePerformer
 	) {}
 
 	async sendUserMessage(cmd: SendUserMessageCmd): Promise<ReadableStream> {
@@ -37,13 +41,9 @@ class EventChatAppImpl implements EventChatApp {
 		const storyEvent = await this.storyEventApp.get(cmd.eventId);
 
 		story.buildPrompt(storyEvent.data.order);
+		const preMessages = this.buildPreMessages(story, storyEvent);
 
-		const chatRes: EventChatsResponse<Notes, EventChatExpand> = await pb
-			.collection(Collections.EventChats)
-			.getOne(cmd.chatId, {
-				expand: 'messages_via_chat,povCharacter,storyEvent'
-			});
-		const chat = EventChat.fromResponse(chatRes);
+		const chat = await this.getChat(cmd.chatId);
 
 		const userMsg = await pb.collection(Collections.Messages).create({
 			chat: cmd.chatId,
@@ -53,19 +53,27 @@ class EventChatAppImpl implements EventChatApp {
 			character: chat.data.povCharacter
 		});
 
-		const planScene = await this.storyteller.planScene(story, storyEvent, chat, userMsg);
-		return this.createSSEStream(story, storyEvent, chat, userMsg, planScene);
+		const aiMsg = await pb.collection(Collections.Messages).create({
+			chat: chat.data.id,
+			content: '',
+			role: MessagesRoleOptions.ai,
+			status: MessagesStatusOptions.streaming
+		});
+		const planScene = await this.scenePlanner.plan(chat, userMsg, preMessages);
+		await pb.collection(Collections.Messages).delete(aiMsg.id);
+
+		return this.createSSEStream(chat, userMsg, planScene, preMessages);
 	}
 
 	private createSSEStream(
-		story: Story,
-		storyEvent: StoryEvent,
 		chat: EventChat,
 		userMsg: MessagesResponse,
-		plan: z.infer<typeof SchemaScenePlan>
+		plan: z.infer<typeof SchemaScenePlan>,
+		preMessages: OpenAIMessage[]
 	): ReadableStream {
 		const encoder = new TextEncoder();
-		const storyteller = this.storyteller;
+		const scenePerformer = this.scenePerformer;
+		const getChat = this.getChat;
 
 		return new ReadableStream({
 			async start(controller) {
@@ -78,16 +86,10 @@ class EventChatAppImpl implements EventChatApp {
 					const processedSteps: z.infer<typeof SchemaScenePlan>['steps'] = [];
 
 					for (let i = 0; i < plan.steps.length; i++) {
-						const chatRes: EventChatsResponse<Notes, EventChatExpand> = await pb
-							.collection(Collections.EventChats)
-							.getOne(chat.data.id, {
-								expand: 'messages_via_chat,povCharacter,storyEvent'
-							});
-						const newChat = EventChat.fromResponse(chatRes);
+						const newChat = await getChat(chat.data.id);
 
 						const step = plan.steps[i];
 
-						// Create a new message for this step
 						const aiMsg = await pb.collection(Collections.Messages).create({
 							chat: chat.data.id,
 							content: '',
@@ -99,7 +101,6 @@ class EventChatAppImpl implements EventChatApp {
 							}
 						});
 
-						// Send step start event
 						sendEvent(
 							'step_start',
 							JSON.stringify({
@@ -109,19 +110,16 @@ class EventChatAppImpl implements EventChatApp {
 							})
 						);
 
-						// Create plan with current step and all previous processed steps
 						const prevSteps: z.infer<typeof SchemaScenePlan> = {
 							steps: [...processedSteps, step]
 						};
 
-						// Generate content for this step using previous steps
-						const stepStream = storyteller.generateSceneStep(
-							story,
-							storyEvent,
+						const stepStream = scenePerformer.perform(
 							newChat,
 							prevSteps,
 							userMsg,
-							aiMsg
+							aiMsg,
+							preMessages
 						);
 
 						let accumulatedText = '';
@@ -143,16 +141,13 @@ class EventChatAppImpl implements EventChatApp {
 								);
 							}
 
-							// Update message with final content
 							await pb.collection(Collections.Messages).update(aiMsg.id, {
 								status: MessagesStatusOptions.final,
 								content: accumulatedText
 							});
 
-							// Add current step to processed steps for next iteration
 							processedSteps.push(step);
 
-							// Send step complete event
 							sendEvent(
 								'step_done',
 								JSON.stringify({
@@ -163,7 +158,10 @@ class EventChatAppImpl implements EventChatApp {
 						} catch (error) {
 							await pb.collection(Collections.Messages).update(aiMsg.id, {
 								status: MessagesStatusOptions.final,
-								content: accumulatedText || 'Error occurred during generation'
+								content: accumulatedText || 'Error occurred during generation',
+								metadata: {
+									error: String(error)
+								}
 							});
 							sendEvent(
 								'step_error',
@@ -179,7 +177,6 @@ class EventChatAppImpl implements EventChatApp {
 						}
 					}
 
-					// All steps completed
 					sendEvent('done', JSON.stringify({ totalSteps: plan.steps.length }));
 				} catch (error) {
 					sendEvent('error', JSON.stringify({ error: String(error) }));
@@ -189,6 +186,38 @@ class EventChatAppImpl implements EventChatApp {
 			}
 		});
 	}
+
+	private buildPreMessages(story: Story, event: StoryEvent): OpenAIMessage[] {
+		const messages: OpenAIMessage[] = [];
+
+		messages.push({ role: 'system', content: story.prompt });
+		messages.push({ role: 'system', content: event.prompt });
+
+		const characters = event.getCharacters();
+		messages.push({
+			role: 'system',
+			content:
+				'Available characters:\n' +
+				characters.map((char) => `- ${char.name} ${char.age} (${char.id})`).join('\n')
+		});
+
+		return messages;
+	}
+
+	private async getChat(chatId: string): Promise<EventChat> {
+		const chatRes: EventChatsResponse<Notes, EventChatExpand> = await pb
+			.collection(Collections.EventChats)
+			.getOne(chatId, {
+				expand: 'messages_via_chat,messages_via_chat.character,povCharacter,storyEvent'
+			});
+		const chat = EventChat.fromResponse(chatRes);
+		return chat;
+	}
 }
 
-export const eventChatApp = new EventChatAppImpl(storyApp, storyEventApp, storyteller);
+export const eventChatApp = new EventChatAppImpl(
+	storyApp,
+	storyEventApp,
+	scenePlanner,
+	scenePerformer
+);

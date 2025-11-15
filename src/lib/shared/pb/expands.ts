@@ -17,9 +17,15 @@ export type StoryEventExpand =
 	  }
 	| undefined;
 
+export type MessageExpand =
+	| {
+			character: CharactersResponse | undefined;
+	  }
+	| undefined;
+
 export type EventChatExpand =
 	| {
-			messages_via_chat: MessagesResponse[] | undefined;
+			messages_via_chat: MessagesResponse<unknown, MessageExpand>[] | undefined;
 			povCharacter: CharactersResponse | undefined;
 			storyEvent: StoryEventsResponse | undefined;
 	  }

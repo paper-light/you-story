@@ -18,8 +18,6 @@
 	let isSending = $state(false);
 
 	const canSend = $derived.by(() => {
-		return true;
-
 		if (!content.trim()) return false;
 		if (isSending) return false;
 

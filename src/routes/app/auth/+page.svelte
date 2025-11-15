@@ -54,7 +54,7 @@
 			// 	posthog.capture('oauth_completed', { provider });
 			// }
 
-			await goto('/app');
+			await goto('/app/stories');
 		} catch (e: any) {
 			console.error('Error during OAuth2 flow:', e);
 			error = e;

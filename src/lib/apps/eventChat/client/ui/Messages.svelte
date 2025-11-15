@@ -38,7 +38,7 @@
 	<div
 		bind:this={messagesContainer}
 		{onscroll}
-		class={['h-full space-y-2 overflow-y-auto overscroll-contain px-4 py-1']}
+		class={['flex h-full flex-col space-y-2 overflow-y-auto overscroll-contain px-4 py-1']}
 	>
 		{#if messages.length === 0}
 			<div class="flex h-full flex-col items-center justify-center text-center">
@@ -52,7 +52,13 @@
 					msg.role === 'user'
 						? userSender
 						: assistantSenders.find((s) => s.id === msg.character) || assistantSenders[0]}
-				<Message {msg} {incoming} {sender} showHeader={Boolean(msg.character)} />
+				<Message
+					class={['max-w-7/8', !incoming && 'ml-auto']}
+					{msg}
+					{incoming}
+					{sender}
+					showHeader={Boolean(msg.character)}
+				/>
 			{/each}
 		{/if}
 

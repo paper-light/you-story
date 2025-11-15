@@ -40,7 +40,7 @@
 
 <!-- MESSAGE BUBBLE -->
 <div class={['chat-group', className]}>
-	<div class={incoming ? 'chat-start chat' : 'chat-end chat'}>
+	<div class={['chat', incoming ? 'chat-start' : 'chat-end items-end']}>
 		{#if showHeader}
 			<div class="avatar chat-image">
 				<div class="size-10 overflow-hidden rounded-full">

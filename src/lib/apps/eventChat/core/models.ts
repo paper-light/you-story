@@ -1,5 +1,5 @@
 import z from 'zod';
-import type { EventChatExpand, EventChatsResponse } from '$lib';
+import type { EventChatExpand, EventChatsResponse, MessageExpand, MessagesResponse } from '$lib';
 
 export type Sender = {
 	id: string;
@@ -15,13 +15,23 @@ export type MessageChunk = {
 };
 
 export const SchemaSceneStep = z.object({
-	type: z.enum(['world', 'character']),
+	type: z.enum(['world', 'character-thoughts', 'character-speech']).describe(
+		`
+World: update the environment, atmosphere, or overall mood.
+Character-thoughts: focus the scene on the character's thoughts.
+Character-speech: focus the scene on the character's dialogue.
+`
+	),
 	characterId: z.string().optional().nullable(),
 	description: z.string()
 });
 export const SchemaScenePlan = z.object({
 	steps: z.array(SchemaSceneStep)
 });
+
+export type MessageMetadata = {
+	step?: z.infer<typeof SchemaSceneStep>;
+};
 
 export type Notes = string[];
 
@@ -32,7 +42,10 @@ export class EventChat {
 		return new EventChat(res);
 	}
 
-	getMessages() {
-		return this.data.expand?.messages_via_chat || [];
+	getMessages(): MessagesResponse<MessageMetadata, MessageExpand>[] {
+		return (
+			(this.data.expand?.messages_via_chat as MessagesResponse<MessageMetadata, MessageExpand>[]) ||
+			[]
+		);
 	}
 }

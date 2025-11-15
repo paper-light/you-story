@@ -116,7 +116,7 @@
 				class="select-bordered select w-full"
 				disabled={isSavingCharacter}
 			>
-				<option value="">Select a character</option>
+				<option value="">World (default)</option>
 				{#each availableCharacters as character}
 					<option value={character.id}>{character.name || 'Unnamed Character'}</option>
 				{/each}

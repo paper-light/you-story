@@ -20,7 +20,7 @@ export class StoryEvent {
 		const chars = this.getCharacters();
 
 		this.prompt = `
-Event: ${this.data.name}
+Current Event: ${this.data.name}
 Description: ${this.data.description}
 Characters: ${chars
 			.map((char) => {

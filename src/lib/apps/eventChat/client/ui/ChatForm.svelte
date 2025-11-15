@@ -99,7 +99,7 @@
 				class="select-bordered select w-full"
 				{disabled}
 			>
-				<option value="" disabled>Select a character</option>
+				<option value="" disabled>World (default)</option>
 				{#each eventCharacters as character}
 					<option value={character.id}>{character.name || 'Unnamed Character'}</option>
 				{/each}

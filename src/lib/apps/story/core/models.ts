@@ -31,7 +31,7 @@ Story: ${this.data.name}
 Description: ${this.data.description}
 Bible: ${JSON.stringify(this.data.bible)}
 
-Events:
+Previous Events:
 ${eventPrompt || '<No previous events>'}
 `;
 	}

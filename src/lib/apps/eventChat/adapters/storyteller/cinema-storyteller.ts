@@ -6,7 +6,7 @@ import type { Story } from '$lib/apps/story/core';
 import type { StoryEvent } from '$lib/apps/storyEvent/core';
 import type { CharactersResponse, MessagesResponse } from '$lib';
 
-import { grok } from '$lib/shared/server';
+import { grok, LLMS } from '$lib/shared/server';
 
 import { SchemaScenePlan, type MessageChunk, type EventChat, type Storyteller } from '../../core';
 
@@ -17,8 +17,8 @@ type OpenAIMessage = {
 	content: string;
 };
 
-export const STORYTELLER_MODEL = 'grok-4-fast-non-reasoning';
-// export const STORYTELLER_MODEL = 'grok-4-fast';
+export const SCENE_PERFORMER_MODEL = LLMS.GROK_4_FAST_NON_REASONING;
+export const SCENE_PLANNER_MODEL = LLMS.GROK_4_FAST;
 
 class CinemaStoryteller implements Storyteller {
 	async planScene(
@@ -29,15 +29,16 @@ class CinemaStoryteller implements Storyteller {
 	): Promise<z.infer<typeof SchemaScenePlan>> {
 		const chars = storyEvent.getCharacters();
 
-		const messages = this.buildMessages(story, storyEvent, chat, chars, userMsg);
+		const messages = this.preBuildMessages(story, storyEvent, chars);
 		messages.push(...this.buildPlanMessages());
+		messages.push(...this.postBuildMessages(chat, userMsg));
 
 		const grokLf = observeOpenAI(grok, {
-			traceName: 'storyteller-plan'
+			traceName: 'scene'
 		});
 
 		const completion = await grokLf.chat.completions.create({
-			model: STORYTELLER_MODEL,
+			model: SCENE_PLANNER_MODEL,
 			messages,
 			response_format: zodResponseFormat(SchemaScenePlan, 'scene_steps')
 		});
@@ -55,29 +56,37 @@ class CinemaStoryteller implements Storyteller {
 	): ReadableStream<MessageChunk> {
 		const chars = storyEvent.getCharacters();
 
-		const messages = this.buildMessages(story, storyEvent, chat, chars, userMsg);
+		const messages = this.preBuildMessages(story, storyEvent, chars);
 		messages.push(...this.buildGenMessages(plan));
+		messages.push(...this.postBuildMessages(chat, userMsg));
 
-		const grokLf = observeOpenAI(grok, {
-			traceName: 'storyteller-generate'
-		});
+		const grokLf = observeOpenAI(grok);
 
 		return new ReadableStream<MessageChunk>({
 			start: async (controller) => {
-				const completion = await grokLf.chat.completions.create({
-					model: STORYTELLER_MODEL,
-					messages,
-					stream: true
-				});
+				try {
+					const completion = await grokLf.chat.completions.create({
+						model: SCENE_PERFORMER_MODEL,
+						messages,
+						stream: true,
+						stream_options: { include_usage: true }
+					});
 
-				for await (const chunk of completion) {
-					const text = chunk.choices[0].delta.content || '';
-					if (text) {
-						controller.enqueue({ text, msgId: aiMsg.id });
+					for await (const chunk of completion) {
+						// Check if chunk has choices and delta content
+						// OpenAI returns usage in a final chunk with an empty choices list
+						if (chunk.choices && chunk.choices.length > 0 && chunk.choices[0]?.delta) {
+							const text = chunk.choices[0].delta.content || '';
+							if (text) {
+								controller.enqueue({ text, msgId: aiMsg.id });
+							}
+						}
 					}
-				}
 
-				controller.close();
+					controller.close();
+				} catch (error) {
+					controller.error(error);
+				}
 			}
 		});
 	}
@@ -92,14 +101,19 @@ class CinemaStoryteller implements Storyteller {
 		const messages: OpenAIMessage[] = [];
 		const lastStep = plan.steps.at(-1);
 		messages.push({ role: 'system', content: GENERATE_PROMPT });
-		messages.push({
-			role: 'system',
-			content:
-				'Previous steps in the scene:\n' +
-				plan.steps
-					.map((step) => `- ${step.type} (${step.characterId || 'world'}): ${step.description}`)
-					.join('\n')
-		});
+
+		const prevSteps = plan.steps.slice(0, -1);
+		if (prevSteps.length > 0) {
+			messages.push({
+				role: 'system',
+				content:
+					'Previous steps in the scene:\n' +
+					prevSteps
+						.map((step) => `- ${step.type} (${step.characterId || 'world'}): ${step.description}`)
+						.join('\n')
+			});
+		}
+
 		messages.push({
 			role: 'system',
 			content: `Current scene plan:\n${lastStep?.type} (${lastStep?.characterId || 'world'}): ${lastStep?.description || ''}`
@@ -107,16 +121,32 @@ class CinemaStoryteller implements Storyteller {
 		return messages;
 	}
 
-	private buildMessages(
+	private preBuildMessages(
 		story: Story,
 		storyEvent: StoryEvent,
-		chat: EventChat,
-		chars: CharactersResponse[],
-		userMsg: MessagesResponse
+		chars: CharactersResponse[]
 	): OpenAIMessage[] {
 		const messages: OpenAIMessage[] = [];
 		messages.push({ role: 'user', content: story.prompt });
 		messages.push({ role: 'user', content: storyEvent.prompt });
+
+		messages.push({
+			role: 'system',
+			content:
+				'Available characters:\n' +
+				chars.map((char) => `- ${char.name} ${char.age} (${char.id})`).join('\n')
+		});
+
+		return messages;
+	}
+
+	private postBuildMessages(chat: EventChat, userMsg: MessagesResponse): OpenAIMessage[] {
+		const messages: OpenAIMessage[] = [];
+
+		const notes = chat.data.notes || [];
+		if (notes.length > 0)
+			messages.push({ role: 'system', content: 'Additional User instructions for the scene:\n' });
+		for (const note of notes) messages.push({ role: 'user', content: note });
 
 		// Add chat history
 		const chatMessages = chat.getMessages();
@@ -128,18 +158,6 @@ class CinemaStoryteller implements Storyteller {
 				content: msg.content
 			});
 		}
-
-		messages.push({
-			role: 'system',
-			content:
-				'Available characters:\n' +
-				chars.map((char) => `- ${char.name} ${char.age} (${char.id})`).join('\n')
-		});
-
-		const notes = chat.data.notes || [];
-		if (notes.length > 0)
-			messages.push({ role: 'system', content: 'Additional User instructions for the scene:\n' });
-		for (const note of notes) messages.push({ role: 'user', content: note });
 
 		messages.push({
 			role: 'user',
