@@ -11,14 +11,15 @@
 		ChevronLeft,
 		ChevronRight,
 		Heart,
-		Book
+		Book,
+		MessageSquare
 	} from 'lucide-svelte';
 
 	import { uiStore } from '$lib/shared/ui/ui.svelte';
-	import { userStore, subStore } from '$lib/apps/user/client';
+	import { userStore, subStore, FeedbackForm } from '$lib/apps/user/client';
 	import { storiesStore } from '$lib/apps/story/client';
 	import { charactersStore } from '$lib/apps/character/client';
-	import { Modal, ThemeController } from '$lib/shared/ui';
+	import { Button, Modal, ThemeController } from '$lib/shared/ui';
 
 	import Splash from './Splash.svelte';
 
@@ -137,6 +138,24 @@
 				</ul>
 			</nav>
 
+			<div class="mb-1 flex justify-center p-0">
+				<Button
+					class="justify-start"
+					color="neutral"
+					block={sidebarOpen}
+					circle={!sidebarOpen}
+					style="ghost"
+					size={sidebarOpen ? 'md' : 'lg'}
+					onclick={() => uiStore.toggleFeedbackModal()}
+				>
+					<MessageSquare class={sidebarOpen ? 'size-7' : 'mx-auto size-6'} />
+					{#if sidebarOpen}
+						Feedback
+					{:else}
+						<span class="sr-only">Feedback</span>
+					{/if}
+				</Button>
+			</div>
 			<!-- Theme Controller -->
 			<div class={['mb-2 border-base-300', sidebarOpen ? '' : 'flex justify-center']}>
 				<ThemeController expanded={sidebarOpen} navStyle />
@@ -206,6 +225,5 @@
 	open={uiStore.feedbackModalOpen}
 	onclose={() => uiStore.setFeedbackModalOpen(false)}
 >
-	<div></div>
-	<!-- <FeedbackForm /> -->
+	<FeedbackForm />
 </Modal>
