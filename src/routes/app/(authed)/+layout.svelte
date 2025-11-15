@@ -12,7 +12,8 @@
 		ChevronRight,
 		Heart,
 		Book,
-		MessageSquare
+		MessageSquare,
+		Play
 	} from 'lucide-svelte';
 
 	import { uiStore } from '$lib/shared/ui/ui.svelte';
@@ -35,6 +36,8 @@
 		{ path: '/app/stories', icon: Book, label: 'Stories' },
 		{ path: '/app/characters', icon: Users, label: 'Characters' }
 	];
+
+	const chatSettings = $derived(uiStore.chatSettings);
 
 	onMount(async () => {
 		const { user, sub, stories, characters } = await globalPromise;
@@ -116,6 +119,30 @@
 			<!-- Navigation -->
 			<nav class="flex-1 p-1" class:overflow-y-auto={sidebarOpen}>
 				<ul class="menu w-full gap-2">
+					{#if chatSettings}
+						<li class="w-full">
+							<a
+								href={`/app/stories/${chatSettings?.storyId}/events/${chatSettings?.eventId}/chats/${chatSettings?.chatId}`}
+								class={[
+									'btn flex w-full items-center gap-2 rounded-full btn-ghost transition-all',
+									sidebarOpen ? 'btn-circle justify-start px-4' : 'justify-center',
+									isActive(
+										`/app/stories/${chatSettings?.storyId}/events/${chatSettings?.eventId}/chats/${chatSettings?.chatId}`
+									)
+										? 'btn-soft'
+										: ''
+								]}
+								title={!sidebarOpen ? 'Stories' : ''}
+							>
+								<Play class="block size-6 shrink-0" />
+								{#if sidebarOpen}
+									<span class="font-medium text-nowrap">Last Chat</span>
+								{/if}
+							</a>
+						</li>
+						<li class="separator"></li>
+					{/if}
+
 					{#each navItems as item}
 						{@const Icon = item.icon}
 						<li class="w-full">
@@ -138,23 +165,18 @@
 				</ul>
 			</nav>
 
-			<div class="mb-1 flex justify-center p-0">
-				<Button
-					class="justify-start"
-					color="neutral"
-					block={sidebarOpen}
-					circle={!sidebarOpen}
-					style="ghost"
-					size={sidebarOpen ? 'md' : 'lg'}
+			<div class="mb-2 flex justify-center p-0">
+				<button
+					class={['btn justify-start btn-ghost', sidebarOpen ? 'btn-block' : 'btn-circle']}
 					onclick={() => uiStore.toggleFeedbackModal()}
 				>
-					<MessageSquare class={sidebarOpen ? 'size-7' : 'mx-auto size-6'} />
+					<MessageSquare class={sidebarOpen ? 'size-7' : 'mx-auto size-8'} />
 					{#if sidebarOpen}
 						Feedback
 					{:else}
 						<span class="sr-only">Feedback</span>
 					{/if}
-				</Button>
+				</button>
 			</div>
 			<!-- Theme Controller -->
 			<div class={['mb-2 border-base-300', sidebarOpen ? '' : 'flex justify-center']}>
@@ -198,8 +220,26 @@
 				<Users class={page.url.pathname === '/app/characters' ? 'text-primary' : 'text-neutral'} />
 			</a>
 			<div>
-				<a href="/app/stories/new" class="dock-item btn-solid btn btn-circle btn-primary">
-					<Plus size={32} />
+				<a
+					href={`/app/stories/${chatSettings?.storyId}/events/${chatSettings?.eventId}/chats/${chatSettings?.chatId}`}
+					class={[
+						'dock-item btn-solid btn btn-circle btn-primary',
+						isActive(
+							`/app/stories/${chatSettings?.storyId}/events/${chatSettings?.eventId}/chats/${chatSettings?.chatId}`
+						)
+							? 'btn-soft'
+							: ''
+					]}
+				>
+					<Play class="block size-6 shrink-0" />
+				</a>
+			</div>
+			<div>
+				<a href="/app/stories/new" class="dock-item">
+					<Plus
+						size={32}
+						class={page.url.pathname === '/app/stories/new' ? 'text-primary' : 'text-neutral'}
+					/>
 				</a>
 			</div>
 			<a href="/app/settings" data-sveltekit-preload-data="tap" class="dock-item">

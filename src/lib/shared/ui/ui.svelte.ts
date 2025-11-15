@@ -1,10 +1,17 @@
 import { z } from 'zod';
 import { browser } from '$app/environment';
 
+const ChatSettingsSchema = z.object({
+	storyId: z.string().optional().nullable(),
+	eventId: z.string().optional().nullable(),
+	chatId: z.string().optional().nullable()
+});
+
 const UIStateSchema = z.object({
 	paywallOpen: z.boolean().default(false),
 	globalSidebarOpen: z.boolean().default(true),
-	feedbackModalOpen: z.boolean().default(false)
+	feedbackModalOpen: z.boolean().default(false),
+	chatSettings: ChatSettingsSchema.optional().nullable().default(null)
 });
 
 type UIState = z.infer<typeof UIStateSchema>;
@@ -14,9 +21,17 @@ class UIStore {
 		UIStateSchema.parse(JSON.parse(browser ? (localStorage.getItem('uiState') ?? '{}') : '{}'))
 	);
 
+	chatSettings = $derived(this._state?.chatSettings);
 	paywallOpen = $derived(this._state?.paywallOpen);
 	globalSidebarOpen = $derived(this._state?.globalSidebarOpen);
 	feedbackModalOpen = $derived(this._state?.feedbackModalOpen);
+
+	// chatSettings
+	setChatSettings(storyId: string, eventId: string, chatId: string) {
+		if (!this._state) return;
+		this._state.chatSettings = { storyId, eventId, chatId };
+		this.saveState();
+	}
 
 	// paywallOpen
 	togglePaywallOpen() {
