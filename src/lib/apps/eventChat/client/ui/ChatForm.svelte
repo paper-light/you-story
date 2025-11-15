@@ -18,28 +18,6 @@
 		disabled = false
 	}: Props = $props();
 
-	const commitModeOptions: {
-		value: EventChatsCommitModeOptions;
-		label: string;
-		description: string;
-	}[] = [
-		{
-			value: EventChatsCommitModeOptions.autoCommit,
-			label: 'Auto Commit',
-			description: 'Automatically commit changes to the story'
-		},
-		{
-			value: EventChatsCommitModeOptions.proposeDiffs,
-			label: 'Propose Diffs',
-			description: 'Suggest changes for manual review'
-		},
-		{
-			value: EventChatsCommitModeOptions.noncanonical,
-			label: 'Non-canonical',
-			description: "Explore without affecting the story's canon"
-		}
-	];
-
 	const typeOptions: {
 		value: EventChatsTypeOptions;
 		label: string;
@@ -70,7 +48,7 @@
 
 <div class="space-y-4">
 	<!-- Type - Required -->
-	<div class="form-control">
+	<!-- <div class="form-control">
 		<label class="label" for={typeId}>
 			<span class="label-text font-semibold">Mode</span>
 			<span class="label-text-alt text-xs text-error">Required</span>
@@ -85,7 +63,7 @@
 				{selectedType?.description}
 			</span>
 		</div>
-	</div>
+	</div> -->
 
 	<!-- POV Character - Required -->
 	{#if type === EventChatsTypeOptions.roleplay}

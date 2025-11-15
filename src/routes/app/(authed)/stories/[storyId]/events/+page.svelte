@@ -207,17 +207,23 @@
 		try {
 			if (isCreatingNew) {
 				// Create new event
-				if (!storyId) return;
+				if (!storyId || !prevEventForNew?.id || !nextEventForNew?.id) return;
 
-				const order = prevEventForNew ? (prevEventForNew.order ?? 0) + 1 : 1;
+				const prevOrder = prevEventForNew ? (prevEventForNew.order ?? 0) : 0;
+				const nextOrder = nextEventForNew ? (nextEventForNew.order ?? 0) : Infinity;
+				const order = (prevOrder + nextOrder) / 2;
 
-				await storyEventsApi.create({
-					story: storyId,
-					name: eventName,
-					description: eventDescription,
-					characters: eventCharacters,
-					order
-				});
+				await storyEventsApi.create(
+					{
+						story: storyId,
+						name: eventName,
+						description: eventDescription,
+						characters: eventCharacters,
+						order
+					},
+					prevEventForNew.id,
+					nextEventForNew.id
+				);
 
 				// Reset state after creation
 				isCreatingNew = false;

@@ -49,7 +49,9 @@
 			</div>
 
 			<div class="chat-header flex items-center space-x-2">
-				<span class="text-sm font-semibold">{sender?.name || sender?.id}</span>
+				<span class="text-sm font-semibold"
+					>{!incoming ? `You (${sender?.name || 'World'})` : sender?.name || 'World'}</span
+				>
 				{#if formattedTime}
 					<time datetime={msg.created} class="text-xs opacity-50">
 						{formattedTime}

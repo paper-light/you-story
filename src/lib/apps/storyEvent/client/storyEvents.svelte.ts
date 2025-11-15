@@ -15,6 +15,7 @@ class StoryEventsStore {
 				case 'create':
 					this._storyEvents = this._storyEvents.filter((item) => !item.id.startsWith('temp-'));
 					this._storyEvents.push(e.record);
+					this._storyEvents.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
 					break;
 				case 'update':
 					this._storyEvents = this._storyEvents.map((item) =>

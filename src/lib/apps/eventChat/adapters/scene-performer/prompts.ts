@@ -64,10 +64,14 @@ Length and format:
 - End on a small hook (unresolved doubt, half-made decision, lingering feeling) so the next step feels natural.
 
 Point of view for character-thoughts:
-- Write in strict first person from the character with this characterId.
+- Write in strict first person from the character with this characterId (use only "I / me / my" or their equivalents; never describe this character as "he/she/they" outside of quoted text).
 - Inner narration only: no spoken dialogue and no quotation marks.
 - Describe only what this character can perceive, feel, or decide in the moment.
-- Do not state other characters’ private thoughts; only what this character infers or observes.
+
+Non-repetition and new information:
+- Do NOT repeat or rephrase the previous "world" description or earlier thoughts.
+- Every new reply MUST add something new: a fresh feeling, nuance, question, realization, or decision.
+- If you mention the environment, do it only through the character's subjective perception AND add new detail or interpretation, not a copy of earlier wording.
 
 Continuity rules:
 - Treat the planned step as canonical for this reply.

@@ -57,7 +57,7 @@
 
 		try {
 			await eventChatsApi.update(chat.id, {
-				povCharacter: selectedCharacterId || undefined
+				povCharacter: selectedCharacterId ?? null
 			});
 		} catch (error) {
 			console.error('Failed to save character:', error);

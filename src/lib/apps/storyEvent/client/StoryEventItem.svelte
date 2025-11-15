@@ -3,12 +3,13 @@
 	import { Calendar, Users } from 'lucide-svelte';
 
 	interface Props {
+		index: number;
 		event: StoryEventsResponse;
 		isActive?: boolean;
 		onclick?: () => void;
 	}
 
-	let { event, isActive = false, onclick }: Props = $props();
+	let { index, event, isActive = false, onclick }: Props = $props();
 </script>
 
 <button
@@ -28,7 +29,7 @@
 				isActive ? 'bg-primary text-primary-content' : 'bg-base-300 text-base-content'
 			].join(' ')}
 		>
-			{event.order}
+			{index + 1}
 		</div>
 
 		<!-- Event Content -->

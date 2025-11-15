@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
+
+	import pchelImage from '$lib/shared/assets/images/pchel.png';
 	import {
 		eventChatsApi,
 		eventChatsStore,
@@ -28,27 +30,23 @@
 	const messages = $derived(messagesStore.messages);
 
 	const chars = $derived(charactersStore.characters);
-	let povCharacter = $derived(chars.find((char) => char.id === chat?.povCharacter));
 
-	// Senders for Messages component
-	const userSender = $derived({
-		id: 'user',
-		name: `You (${povCharacter?.name ?? 'World'})`,
-		role: 'user' as const,
-		avatar: povCharacter
-			? charactersStore.getCharacterAvatar(povCharacter)
-			: (userStore.avatarUrl ?? '')
-	});
-
-	const assistantSenders = $derived(
-		chars.map((char) => ({
+	const senders = $derived.by(() => {
+		const senders = chars.map((char) => ({
 			id: char.id,
 			name: char.name,
 			role: 'ai' as const,
 			avatar: charactersStore.getCharacterAvatar(char)
-		}))
-	);
+		}));
+		senders.unshift({
+			id: '',
+			name: 'World',
+			role: 'ai' as const,
+			avatar: pchelImage
+		});
 
+		return senders;
+	});
 	// Load chat data and messages
 	onMount(async () => {
 		if (!chatId) {
@@ -134,7 +132,7 @@
 					<span class="loading loading-lg loading-spinner"></span>
 				</div>
 			{:else}
-				<Messages {messages} {userSender} {assistantSenders} class="h-full" />
+				<Messages {messages} {senders} class="h-full" />
 			{/if}
 		</div>
 

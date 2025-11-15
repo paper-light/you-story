@@ -21,7 +21,7 @@
 			? EventChatsCommitModeOptions.noncanonical
 			: EventChatsCommitModeOptions.autoCommit
 	);
-	let type = $state<EventChatsTypeOptions>(EventChatsTypeOptions.story);
+	let type = $state<EventChatsTypeOptions>(EventChatsTypeOptions.roleplay);
 	let povCharacter = $state('');
 	let isCreating = $state(false);
 

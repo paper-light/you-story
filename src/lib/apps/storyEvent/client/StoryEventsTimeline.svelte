@@ -2,7 +2,7 @@
 	import { storyEventsStore } from '$lib/apps/storyEvent/client';
 	import type { StoryEventsResponse } from '$lib';
 	import { Plus, Sparkles } from 'lucide-svelte';
-	import { Button } from '$lib/shared/ui';
+	import { Button, scrollToBottom } from '$lib/shared/ui';
 	import StoryEventItem from './StoryEventItem.svelte';
 
 	interface Props {
@@ -25,6 +25,13 @@
 	}: Props = $props();
 
 	const events = $derived(storyEventsStore.storyEvents.filter((event) => event.story === storyId));
+	let eventsContainer: HTMLElement | null = $state(null);
+
+	$effect(() => {
+		if (eventsContainer && events.length > 0) {
+			scrollToBottom(eventsContainer);
+		}
+	});
 
 	function handleEventClick(eventId: string) {
 		onEventSelect?.(eventId);
@@ -50,7 +57,7 @@
 	</div>
 
 	<!-- Timeline List -->
-	<div class="mt-4 flex-1 space-y-3 overflow-y-auto pr-2">
+	<div bind:this={eventsContainer} class="mt-4 flex-1 space-y-3 overflow-y-auto pr-2">
 		{#if events.length === 0}
 			<div
 				class="flex flex-col items-center justify-center rounded-lg border border-dashed border-base-300 bg-base-100 p-8 text-center"
@@ -80,6 +87,7 @@
 
 			{#each events as event, index (event.id)}
 				<StoryEventItem
+					{index}
 					{event}
 					isActive={selectedEventId === event.id}
 					onclick={() => handleEventClick(event.id)}

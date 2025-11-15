@@ -22,7 +22,9 @@ class OpenAIScenePlanner implements ScenePlanner {
 	async plan(
 		chat: EventChat,
 		userMsg: MessagesResponse,
-		preMessages: OpenAIMessage[]
+		preMessages: OpenAIMessage[],
+		sessionId: string,
+		userId: string
 	): Promise<z.infer<typeof SchemaScenePlan>> {
 		const messages = [...preMessages];
 		messages.push({ role: 'system', content: PLAN_PROMPT });
@@ -30,11 +32,16 @@ class OpenAIScenePlanner implements ScenePlanner {
 		messages.push(...this.postBuildMessages(chat));
 		messages.push({
 			role: 'user',
-			content: `User query: ${userMsg.content}`
+			content: `
+(${userMsg?.character || 'World'}) message: 
+${userMsg.content}
+`
 		});
 
 		const grokLf = observeOpenAI(grok, {
-			traceName: 'scene'
+			traceName: 'scene',
+			sessionId,
+			userId
 		});
 
 		const completion = await grokLf.chat.completions.create({

@@ -10,19 +10,20 @@
 
 	interface Props {
 		messages: MessagesResponse[];
-		userSender: Sender;
-		assistantSenders: Sender[];
+		senders: Sender[];
 		class?: ClassValue;
 	}
 
-	const { class: className, messages, userSender, assistantSenders }: Props = $props();
+	const { class: className, messages, senders }: Props = $props();
 
 	let messagesContainer: HTMLElement | null = $state(null);
 	let showScrollButton = $state(false);
 
 	let lastLength = 0;
 	$effect(() => {
-		if (messages.length > lastLength) setTimeout(() => scrollToBottom(messagesContainer), 100);
+		if (messages.length > lastLength && messages.at(-1)?.role === 'user') {
+			setTimeout(() => scrollToBottom(messagesContainer), 100);
+		}
 		lastLength = messages.length;
 	});
 
@@ -48,10 +49,7 @@
 		{:else}
 			{#each messages as msg (msg)}
 				{@const incoming = msg.role !== 'user'}
-				{@const sender =
-					msg.role === 'user'
-						? userSender
-						: assistantSenders.find((s) => s.id === msg.character) || assistantSenders[0]}
+				{@const sender = senders.find((s) => s.id === msg.character) || senders.at(-1)!}
 				<Message
 					class={['max-w-7/8', !incoming && 'ml-auto']}
 					{msg}

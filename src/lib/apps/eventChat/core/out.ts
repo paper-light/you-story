@@ -12,7 +12,9 @@ export interface ScenePlanner {
 	plan(
 		chat: EventChat,
 		userMsg: MessagesResponse,
-		preMessages: OpenAIMessage[]
+		preMessages: OpenAIMessage[],
+		sessionId: string,
+		userId: string
 	): Promise<z.infer<typeof SchemaScenePlan>>;
 }
 

@@ -41,9 +41,10 @@ class EventChatAppImpl implements EventChatApp {
 		const storyEvent = await this.storyEventApp.get(cmd.eventId);
 
 		story.buildPrompt(storyEvent.data.order);
-		const preMessages = this.buildPreMessages(story, storyEvent);
 
 		const chat = await this.getChat(cmd.chatId);
+
+		const preMessages = this.buildPreMessages(story, storyEvent, chat.data.povCharacter);
 
 		const userMsg = await pb.collection(Collections.Messages).create({
 			chat: cmd.chatId,
@@ -59,7 +60,13 @@ class EventChatAppImpl implements EventChatApp {
 			role: MessagesRoleOptions.ai,
 			status: MessagesStatusOptions.streaming
 		});
-		const planScene = await this.scenePlanner.plan(chat, userMsg, preMessages);
+		const planScene = await this.scenePlanner.plan(
+			chat,
+			userMsg,
+			preMessages,
+			chat.data.id,
+			cmd.user.id
+		);
 		await pb.collection(Collections.Messages).delete(aiMsg.id);
 
 		return this.createSSEStream(chat, userMsg, planScene, preMessages);
@@ -187,19 +194,29 @@ class EventChatAppImpl implements EventChatApp {
 		});
 	}
 
-	private buildPreMessages(story: Story, event: StoryEvent): OpenAIMessage[] {
+	private buildPreMessages(
+		story: Story,
+		event: StoryEvent,
+		povCharacterId: string
+	): OpenAIMessage[] {
 		const messages: OpenAIMessage[] = [];
 
 		messages.push({ role: 'system', content: story.prompt });
 		messages.push({ role: 'system', content: event.prompt });
 
-		const characters = event.getCharacters();
-		messages.push({
-			role: 'system',
-			content:
-				'Available characters:\n' +
-				characters.map((char) => `- ${char.name} ${char.age} (${char.id})`).join('\n')
-		});
+		const chars = event.getCharacters().filter((char) => char.id !== povCharacterId);
+		if (chars.length > 0) {
+			messages.push({
+				role: 'system',
+				content:
+					'Available characters:\n' +
+					chars.map((char) => `- ${char.name} ${char.age} (${char.id})`).join('\n')
+			});
+			messages.push({
+				role: 'system',
+				content: `NEVER mention the POV character by name in your responses. The POV character is ${povCharacterId}.`
+			});
+		}
 
 		return messages;
 	}
