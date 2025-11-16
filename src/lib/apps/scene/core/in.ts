@@ -5,4 +5,7 @@ export interface SceneApp {
 	getPolicy(enhance: EnhanceOutput): Promise<ScenePolicy>;
 
 	plan(policy: ScenePolicy): Promise<ScenePlan>;
+
+	act(plan: ScenePlan, idx: number): Promise<string>;
+	actStream(plan: ScenePlan, idx: number): ReadableStream<string>;
 }

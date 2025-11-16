@@ -131,11 +131,11 @@ export type CharacterPolicy = {
 
 // SCENE PLAN
 export const SchemaSceneStep = z.object({
-	type: z.enum(['world', 'character-thoughts', 'character-speech']).describe(
+	type: z.enum(['world', 'thoughts', 'speech']).describe(
 		`
 World: update the environment, atmosphere, or overall mood.
-Character-thoughts: focus the scene on the character's thoughts.
-Character-speech: focus the scene on the character's dialogue.
+Thoughts: focus the scene on the character's thoughts.
+Speech: focus the scene on the character's dialogue.
 `
 	),
 	characterId: z.string().optional().nullable(),

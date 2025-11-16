@@ -1,5 +1,4 @@
 import type { EnhanceOutput, ScenePolicy, ScenePlan } from './models';
-import type { MessageChunk } from '$lib/apps/eventChat/core';
 
 export type OpenAIMessage = {
 	role: 'system' | 'user' | 'assistant';
@@ -16,5 +15,5 @@ export interface ScenePlanner {
 
 export interface SceneActor {
 	act(plan: ScenePlan, idx: number): Promise<string>;
-	actStream(plan: ScenePlan, idx: number): Promise<ReadableStream<MessageChunk>>;
+	actStream(plan: ScenePlan, idx: number): ReadableStream<string>;
 }
