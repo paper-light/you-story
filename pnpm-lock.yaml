@@ -138,6 +138,9 @@ importers:
       vitest-browser-svelte:
         specifier: ^2.0.1
         version: 2.0.1(svelte@5.43.6)(vitest@4.0.8)
+      workbox-window:
+        specifier: ^7.3.0
+        version: 7.3.0
 
 packages:
 

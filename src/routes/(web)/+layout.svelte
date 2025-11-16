@@ -48,12 +48,12 @@
 
 		<!-- Footer -->
 		<footer class="footer bg-base-200 p-10 text-base-content md:footer-horizontal">
-			<nav>
+			<!-- <nav>
 				<h6 class="footer-title">Navigation</h6>
 				<a href="#features" class="link link-hover">Features</a>
 				<a href="#privacy" class="link link-hover">Privacy</a>
 				<a href="/app/auth" class="link link-hover">Sign In</a>
-			</nav>
+			</nav> -->
 			<nav>
 				<h6 class="footer-title">Legal</h6>
 				<a href="/legal/terms-and-conditions" class="link link-hover">Terms & Conditions</a>
@@ -76,11 +76,11 @@
 			</div>
 
 			<nav class="flex flex-col gap-4">
-				<a href="#features" class="link text-base-content link-hover">Features</a>
+				<!-- <a href="#features" class="link text-base-content link-hover">Features</a>
 				<a href="#privacy" class="link text-base-content link-hover">Privacy</a>
 				<a href="/app/auth" class="link text-base-content link-hover">Sign In</a>
 
-				<div class="divider my-2"></div>
+				<div class="divider my-2"></div> -->
 
 				<div class="flex flex-col gap-4">
 					<ThemeController expanded={true} />
