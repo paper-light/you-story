@@ -29,19 +29,25 @@
 	}: Props = $props();
 
 	// TIME
-	const utcTs = DateTime.fromFormat(msg.created || '', "yyyy-MM-dd HH:mm:ss.SSS'Z'", {
-		zone: 'utc'
-	});
+	const utcTs = $derived(
+		DateTime.fromFormat(msg.created || '', "yyyy-MM-dd HH:mm:ss.SSS'Z'", {
+			zone: 'utc'
+		})
+	);
 
-	const localTs = utcTs.isValid ? utcTs.toLocal() : utcTs;
-	const formattedTime = localTs.isValid ? localTs.toFormat('h:mm a') : '';
+	const localTs = $derived(utcTs.isValid ? utcTs.toLocal() : utcTs);
+	const formattedTime = $derived(localTs.isValid ? localTs.toFormat('h:mm a') : '');
 
-	const rawHtml = marked.parse(msg.content || '');
-	const safeHtml = DOMPurify.sanitize(rawHtml as string, {
-		ADD_ATTR: ['target', 'rel']
-	});
+	const rawHtml = $derived(marked.parse(msg.content || ''));
+	const safeHtml = $derived(
+		DOMPurify.sanitize(rawHtml as string, {
+			ADD_ATTR: ['target', 'rel']
+		})
+	);
 
-	const isWaitingForResponse = incoming && msg.content.trim() === '' && msg.status === 'streaming';
+	const isWaitingForResponse = $derived(
+		incoming && msg.content.trim() === '' && msg.status === 'streaming'
+	);
 </script>
 
 <!-- DIVIDER HAS COMPLETELY DIFFERENT UI -->
