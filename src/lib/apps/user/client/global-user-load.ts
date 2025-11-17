@@ -11,10 +11,15 @@ export async function globalUserLoad() {
 
 	const stories = await pb
 		.collection(Collections.Stories)
-		.getFullList({ filter: `user = "${user.id}"` });
+		.getFullList({ filter: `user = "${user.id}"`, sort: '-created' });
 	const characters = await pb
 		.collection(Collections.Characters)
-		.getFullList({ filter: `user = "${user.id}"` });
+		.getFullList({ filter: `user = "${user.id}"`, sort: '-created' });
+	const chats = await pb.collection(Collections.Chats).getFullList({
+		filter: `povCharacter.user = "${user.id}"`,
+		expand: 'povCharacter',
+		sort: '-created'
+	});
 
-	return { user, sub, stories, characters };
+	return { user, sub, stories, characters, chats };
 }

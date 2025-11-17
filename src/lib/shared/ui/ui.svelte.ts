@@ -2,9 +2,11 @@ import { z } from 'zod';
 import { browser } from '$app/environment';
 
 const ChatSettingsSchema = z.object({
+	mode: z.enum(['story', 'friend']).optional().nullable(),
 	storyId: z.string().optional().nullable(),
 	eventId: z.string().optional().nullable(),
-	chatId: z.string().optional().nullable()
+	chatId: z.string().optional().nullable(),
+	characterId: z.string().optional().nullable()
 });
 
 const UIStateSchema = z.object({
@@ -27,10 +29,18 @@ class UIStore {
 	feedbackModalOpen = $derived(this._state?.feedbackModalOpen);
 
 	// chatSettings
-	setChatSettings(storyId: string, eventId: string, chatId: string) {
+	setChatSettings(storyId: string, eventId: string, chatId: string, mode: 'story' | 'friend') {
 		if (!this._state) return;
-		this._state.chatSettings = { storyId, eventId, chatId };
+		this._state.chatSettings = { storyId, eventId, chatId, mode };
 		this.saveState();
+	}
+	chatUrl() {
+		if (!this.chatSettings) return null;
+		if (this.chatSettings.mode === 'story') {
+			return `/app/stories/${this.chatSettings.storyId}/events/${this.chatSettings.eventId}/chats/${this.chatSettings.chatId}`;
+		} else {
+			return `/app/characters/${this.chatSettings.characterId}/chats/${this.chatSettings.chatId}`;
+		}
 	}
 
 	// paywallOpen

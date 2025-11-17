@@ -41,21 +41,23 @@ export class SceneAppImpl implements SceneApp {
 
 	// Act
 	async act(
+		kind: 'friend' | 'story',
 		plan: ScenePlan,
 		idx: number,
 		mems: MemporyGetResult,
 		history: OpenAIMessage[]
 	): Promise<string> {
-		const text = await this.sceneActor.act(plan, idx, mems, history);
+		const text = await this.sceneActor.act(kind, plan, idx, mems, history);
 		return text;
 	}
 	actStream(
+		kind: 'friend' | 'story',
 		plan: ScenePlan,
 		idx: number,
 		mems: MemporyGetResult,
 		history: OpenAIMessage[]
 	): ReadableStream<string> {
-		const stream = this.sceneActor.actStream(plan, idx, mems, history);
+		const stream = this.sceneActor.actStream(kind, plan, idx, mems, history);
 		return stream;
 	}
 }

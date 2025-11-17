@@ -16,6 +16,7 @@
 		Play
 	} from 'lucide-svelte';
 
+	import { chatsStore } from '$lib';
 	import { uiStore } from '$lib/shared/ui/ui.svelte';
 	import { userStore, subStore, FeedbackForm } from '$lib/apps/user/client';
 	import { storiesStore } from '$lib/apps/story/client';
@@ -27,6 +28,7 @@
 	const { children, data } = $props();
 	const { globalPromise } = data;
 
+	const user = $derived(userStore.user);
 	const sub = $derived(subStore.sub);
 	const sidebarOpen = $derived(uiStore.globalSidebarOpen);
 
@@ -39,11 +41,12 @@
 	const chatSettings = $derived(uiStore.chatSettings);
 
 	onMount(async () => {
-		const { user, sub, stories, characters } = await globalPromise;
+		const { user, sub, stories, characters, chats } = await globalPromise;
 		if (user) userStore.user = user;
 		if (sub) subStore.sub = sub;
 		if (stories) storiesStore.setStories(stories);
 		if (characters) charactersStore.setCharacters(characters);
+		if (chats) chatsStore.setChats(chats);
 	});
 
 	$effect(() => {
@@ -67,8 +70,6 @@
 	function isActive(path: string) {
 		return page.url.pathname === path;
 	}
-
-	const user = $derived(userStore.user);
 </script>
 
 {#await globalPromise}
@@ -116,15 +117,11 @@
 					{#if chatSettings}
 						<li class="w-full">
 							<a
-								href={`/app/stories/${chatSettings?.storyId}/events/${chatSettings?.eventId}/chats/${chatSettings?.chatId}`}
+								href={uiStore.chatUrl()}
 								class={[
 									'btn flex w-full items-center gap-2 rounded-full btn-ghost transition-all',
 									sidebarOpen ? 'btn-circle justify-start px-4' : 'justify-center',
-									isActive(
-										`/app/stories/${chatSettings?.storyId}/events/${chatSettings?.eventId}/chats/${chatSettings?.chatId}`
-									)
-										? 'btn-soft'
-										: ''
+									uiStore.chatUrl() ? (isActive(uiStore.chatUrl()!) ? 'btn-soft' : '') : ''
 								]}
 								title={!sidebarOpen ? 'Stories' : ''}
 							>

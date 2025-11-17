@@ -21,7 +21,7 @@
 
 	let lastLength = 0;
 	$effect(() => {
-		if (lastLength > 0 && messages.length > lastLength && messages.at(-1)?.role === 'user') {
+		if (lastLength > 0 && messages.length > lastLength) {
 			setTimeout(() => scrollToBottom(messagesContainer), 100);
 		}
 		lastLength = messages.length;

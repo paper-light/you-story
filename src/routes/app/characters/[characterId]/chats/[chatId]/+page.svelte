@@ -3,7 +3,7 @@
 	import { goto } from '$app/navigation';
 	import { ArrowLeft, MessageCircle } from 'lucide-svelte';
 	import { MessagesRoleOptions } from '$lib';
-	import { CharacterForm, charactersStore } from '$lib/apps/character/client';
+	import { CharacterForm, charactersStore, EditCharacter } from '$lib/apps/character/client';
 	import {
 		chatsApi,
 		chatsStore,
@@ -23,7 +23,7 @@
 	const characters = $derived(charactersStore.characters);
 	const messages = $derived(messagesStore.messages);
 
-	const character = $derived(characters.find((c) => c.id === characterId) ?? null);
+	let character = $derived(characters.find((c) => c.id === characterId) ?? null);
 
 	const povCharacter = $derived(
 		chat?.povCharacter ? (characters.find((c) => c.id === chat.povCharacter) ?? null) : null
@@ -81,34 +81,12 @@
 	);
 </script>
 
-<div class="flex h-[calc(100vh-4rem)] flex-col gap-6 p-3 lg:flex-row">
+<div class="flex max-h-screen flex-col gap-4 px-2 lg:flex-row">
 	<div
-		class="hidden w-full flex-col overflow-hidden rounded-xl border border-base-300 bg-base-100 shadow-sm lg:flex lg:w-96"
+		class="hidden w-full flex-1 flex-col overflow-hidden rounded-xl border border-base-300 bg-base-100 shadow-sm lg:flex lg:w-96"
 	>
-		<div class="flex items-center gap-3 border-b border-base-300 p-6">
-			<Button
-				onclick={() => {
-					goto(`/app/characters`);
-				}}
-				size="md"
-				style="solid"
-				circle
-			>
-				<ArrowLeft class="size-5" />
-			</Button>
-			<div>
-				<h2 class="text-xl font-semibold text-base-content">Character Settings</h2>
-				{#if character}
-					<p class="text-xs text-base-content/60">{character.name}</p>
-				{/if}
-			</div>
-		</div>
 		<div class="flex-1 overflow-y-auto p-6">
-			<CharacterForm
-				{character}
-				title="Character Form"
-				description="Tune the persona while you chat."
-			/>
+			<EditCharacter bind:character modal={false} />
 		</div>
 	</div>
 
@@ -148,7 +126,7 @@
 			</div>
 		</div>
 
-		<div class="flex-1 overflow-hidden">
+		<div class="flex-1 overflow-y-auto">
 			{#if !chat}
 				<div class="flex h-full items-center justify-center">
 					<span class="loading loading-lg loading-spinner"></span>
@@ -158,7 +136,7 @@
 			{/if}
 		</div>
 
-		<div class="border-t border-base-300 p-4">
+		<div class="border-t border-base-300 p-4 pb-14 sm:pb-6">
 			<MessageControls {messages} onSend={handleSendMessage} disabled={!chat} />
 		</div>
 	</div>

@@ -1,29 +1,28 @@
 <script lang="ts">
+	import { afterNavigate } from '$app/navigation';
 	import { page } from '$app/state';
 
-	import { chatsStore, messagesStore } from '$lib/apps/eventChat/client';
-	import { Collections, pb } from '$lib';
+	import { uiStore } from '$lib';
+	import { messagesStore } from '$lib/apps/eventChat/client';
 
 	let { children, data } = $props();
 
 	const chatId = $derived(page.params.chatId);
 
+	afterNavigate(() => {
+		if (!page.params.storyId || !page.params.eventId || !page.params.chatId) return;
+		uiStore.setChatSettings(page.params.storyId, page.params.eventId, page.params.chatId, 'friend');
+	});
+
 	$effect(() => {
 		if (!chatId) return;
 
-		pb.collection(Collections.Chats)
-			.getOne(chatId)
-			.then((chat) => {
-				chatsStore.setChats([chat]);
-			})
-			.then(() => {
-				messagesStore.load(chatId).then(() => {
-					messagesStore.subscribe(chatId);
-				});
-				return () => {
-					messagesStore.unsubscribe();
-				};
-			});
+		messagesStore.load(chatId).then(() => {
+			messagesStore.subscribe(chatId);
+		});
+		return () => {
+			messagesStore.unsubscribe();
+		};
 	});
 </script>
 

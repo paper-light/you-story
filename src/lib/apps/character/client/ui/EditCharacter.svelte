@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Upload, X } from 'lucide-svelte';
 	import type { CharactersResponse } from '$lib';
-	import { pb } from '$lib';
+	import { chatsStore, pb } from '$lib';
 	import { charactersStore } from '../characters.svelte';
 	import { Button } from '$lib/shared/ui';
 	import pchelImage from '$lib/shared/assets/images/pchel.png';
@@ -12,20 +12,29 @@
 		character?: CharactersResponse | null;
 		open?: boolean;
 		onclose?: () => void;
+		modal?: boolean;
 	}
 
 	const user = $derived(userStore.user);
 
-	let { character = $bindable(null), open = $bindable(false), onclose }: Props = $props();
+	let {
+		character = $bindable(null),
+		open = $bindable(false),
+		onclose,
+		modal = true
+	}: Props = $props();
 
-	let isCreating = $derived(character === null && open);
+	const chat = $derived(chatsStore.chats.find((c) => c.friend === character?.id));
+
+	let isCreating = $derived(character === null);
 	// Form state
-	let formName = $state('');
-	let formDescription = $state('');
-	let formAge = $state<number | undefined>(undefined);
-	let formAvatarFile: File | null = $state(null);
-	let formAvatarPreview: string | null = $state(null);
-	let originalCharacter: CharactersResponse | null = $state(null);
+	let formName = $derived(character?.name ?? '');
+	let formDescription = $derived(character?.description ?? '');
+	let formAge = $derived(character?.age ?? undefined);
+	let formAvatarFile: File | null = $derived(null);
+	let formAvatarPreview: string | null = $derived(getAvatarUrl(character) ?? null);
+
+	let originalCharacter: CharactersResponse | null = $state(character ?? null);
 
 	let isSaving = $state(false);
 
@@ -42,27 +51,6 @@
 		}
 		return pchelImage;
 	}
-
-	$effect(() => {
-		if (open && character) {
-			// Editing existing character
-			originalCharacter = { ...character };
-			formName = character.name || '';
-			formDescription = character.description || '';
-			formAge = character.age;
-			formAvatarFile = null;
-			const avatarUrl = getAvatarUrl(character);
-			formAvatarPreview = avatarUrl || null;
-		} else if (open && isCreating) {
-			// Creating new character
-			originalCharacter = null;
-			formName = '';
-			formDescription = '';
-			formAge = undefined;
-			formAvatarFile = null;
-			formAvatarPreview = null;
-		}
-	});
 
 	function closeModal() {
 		open = false;
@@ -102,15 +90,9 @@
 				await charactersApi.update(character.id, data);
 			}
 
-			closeModal();
+			if (modal) closeModal();
 		} catch (error) {
 			console.error('Error saving character:', error);
-			// Revert optimistic update if creating
-			if (isCreating) {
-				charactersStore.setCharacters(
-					charactersStore.characters.filter((c) => !c.id.startsWith('temp-'))
-				);
-			}
 		} finally {
 			isSaving = false;
 		}
@@ -137,12 +119,26 @@
 
 <div class="flex h-full flex-col">
 	<!-- Header -->
-	<div class="mb-6 shrink-0 border-b border-base-300 pb-4">
-		<h2 class="text-2xl font-bold">{isCreating ? 'Create Character' : 'Edit Character'}</h2>
-		<p class="mt-1 text-sm text-base-content/60">
-			{isCreating ? 'Add a new character to your collection' : 'Update character information'}
-		</p>
-	</div>
+	<header
+		class="mb-6 flex shrink-0 items-center justify-between border-b border-base-300 pr-6 pb-4"
+	>
+		<div>
+			<h2 class="text-2xl font-bold">{isCreating ? 'Create Character' : 'Edit Character'}</h2>
+			<p class="mt-1 text-sm text-base-content/60">
+				{isCreating ? 'Add a new character to your collection' : 'Update character information'}
+			</p>
+		</div>
+
+		{#if !isCreating && chat && character}
+			<Button
+				wide
+				href={`/app/characters/${character.id}/chats/${chat.id}`}
+				color="primary"
+				style="soft"
+				disabled={isSaving}>Go to Chat</Button
+			>
+		{/if}
+	</header>
 
 	<!-- Form Content -->
 	<div class="min-h-0 flex-1 space-y-6 overflow-y-auto">
@@ -251,7 +247,9 @@
 
 	<!-- Footer Actions -->
 	<div class="mt-6 flex shrink-0 justify-end gap-3 border-t border-base-300 pt-4">
-		<Button onclick={closeModal} color="neutral" style="ghost" disabled={isSaving}>Close</Button>
+		{#if modal}
+			<Button onclick={closeModal} color="neutral" style="ghost" disabled={isSaving}>Close</Button>
+		{/if}
 		<Button onclick={handleSave} color="primary" disabled={isSaving}>
 			{#if isSaving}
 				<span class="loading loading-sm loading-spinner"></span>

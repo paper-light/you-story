@@ -5,12 +5,11 @@ export async function loadStoryContext(storyId: string) {
 		.collection(Collections.StoryEvents)
 		.getFullList({ filter: `story = "${storyId}"`, sort: 'order' });
 
-	const chats = await pb.collection(Collections.Chats).getFullList({
+	const storyChats = await pb.collection(Collections.Chats).getFullList({
 		filter: `storyEvent.story = "${storyId}"`,
 		expand: 'storyEvent',
 		sort: '-created'
 	});
-	console.log(chats);
 
-	return { storyEvents, chats };
+	return { storyEvents, storyChats };
 }

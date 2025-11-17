@@ -6,19 +6,25 @@ import type { MemporyGetResult } from '$lib/apps/memory/core';
 import type { OpenAIMessage, ScenePlan } from '../../core';
 import type { SceneActor } from '../../core';
 
-import { PERFORM_WORLD_PROMPT, PERFORM_THOUGHTS_PROMPT, PERFORM_SPEECH_PROMPT } from './prompts';
+import {
+	PERFORM_WORLD_PROMPT,
+	PERFORM_THOUGHTS_PROMPT,
+	PERFORM_SPEECH_PROMPT,
+	FRIEND_PROMPT
+} from './prompts';
 
 export const SCENE_ACTOR_MODEL = LLMS.GROK_4_FAST_NON_REASONING;
 const MAX_RETRIES = 5;
 
 class OpenAISceneActor implements SceneActor {
 	async act(
+		kind: 'friend' | 'story',
 		plan: ScenePlan,
 		idx: number,
 		mems: MemporyGetResult,
 		history: OpenAIMessage[]
 	): Promise<string> {
-		const messages = this.postBuildMessages(plan, idx, mems, history);
+		const messages = this.postBuildMessages(kind, plan, idx, mems, history);
 		const grokLf = observeOpenAI(grok);
 
 		let lastError: Error | unknown;
@@ -42,12 +48,13 @@ class OpenAISceneActor implements SceneActor {
 	}
 
 	actStream(
+		kind: 'friend' | 'story',
 		plan: ScenePlan,
 		idx: number,
 		mems: MemporyGetResult,
 		history: OpenAIMessage[]
 	): ReadableStream<string> {
-		const messages = this.postBuildMessages(plan, idx, mems, history);
+		const messages = this.postBuildMessages(kind, plan, idx, mems, history);
 		const grokLf = observeOpenAI(grok);
 
 		return new ReadableStream<string>({
@@ -86,6 +93,7 @@ class OpenAISceneActor implements SceneActor {
 	}
 
 	private postBuildMessages(
+		kind: 'friend' | 'story',
 		plan: ScenePlan,
 		idx: number,
 		mems: MemporyGetResult,
@@ -151,7 +159,12 @@ class OpenAISceneActor implements SceneActor {
 		});
 
 		const charStatic = mems.static.find((mem) => mem.characterId === step.characterId)?.content;
-		if (step.type === 'world') {
+		if (kind === 'friend') {
+			messages.push({
+				role: 'system',
+				content: FRIEND_PROMPT.replaceAll('{character}', charStatic!)
+			});
+		} else if (step.type === 'world') {
 			messages.push({ role: 'system', content: PERFORM_WORLD_PROMPT });
 		} else if (step.type === 'thoughts') {
 			messages.push({

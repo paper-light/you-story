@@ -17,12 +17,14 @@ export interface SceneApp {
 	plan(policy: ScenePolicy, mems: MemporyGetResult, history: OpenAIMessage[]): Promise<ScenePlan>;
 
 	act(
+		kind: 'friend' | 'story',
 		plan: ScenePlan,
 		idx: number,
 		mems: MemporyGetResult,
 		history: OpenAIMessage[]
 	): Promise<string>;
 	actStream(
+		kind: 'friend' | 'story',
 		plan: ScenePlan,
 		idx: number,
 		mems: MemporyGetResult,

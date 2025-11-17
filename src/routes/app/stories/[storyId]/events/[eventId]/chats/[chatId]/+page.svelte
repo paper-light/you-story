@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import { afterNavigate, goto } from '$app/navigation';
+	import { goto } from '$app/navigation';
 
 	import pchelImage from '$lib/shared/assets/images/pchel.png';
 	import { chatsApi, chatsStore, messagesStore, ChatController } from '$lib/apps/eventChat/client';
@@ -10,7 +10,6 @@
 	import { ArrowLeft, MessageCircle } from 'lucide-svelte';
 	import { MessagesRoleOptions } from '$lib';
 	import { charactersStore } from '$lib/apps/character/client';
-	import { uiStore } from '$lib/shared/ui/ui.svelte';
 
 	const storyId = $derived(page.params.storyId);
 	const eventId = $derived(page.params.eventId);
@@ -36,11 +35,6 @@
 		});
 
 		return senders;
-	});
-
-	afterNavigate(() => {
-		if (!page.params.storyId || !page.params.eventId || !page.params.chatId) return;
-		uiStore.setChatSettings(page.params.storyId, page.params.eventId, page.params.chatId);
 	});
 
 	function handleBack() {

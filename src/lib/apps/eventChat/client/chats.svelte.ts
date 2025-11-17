@@ -8,6 +8,10 @@ class ChatsStore {
 	setChats(chats: ChatsResponse[]) {
 		this._chats = chats;
 	}
+	mergeChats(chats: ChatsResponse[]) {
+		this._chats = [...this._chats, ...chats];
+		this._chats.sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime());
+	}
 
 	getEventChats(eventId: string) {
 		return this._chats.filter((chat) => chat.storyEvent === eventId);

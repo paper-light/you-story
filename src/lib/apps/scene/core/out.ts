@@ -16,12 +16,14 @@ export interface ScenePlanner {
 
 export interface SceneActor {
 	act(
+		kind: 'friend' | 'story',
 		plan: ScenePlan,
 		idx: number,
 		mems: MemporyGetResult,
 		history: OpenAIMessage[]
 	): Promise<string>;
 	actStream(
+		kind: 'friend' | 'story',
 		plan: ScenePlan,
 		idx: number,
 		mems: MemporyGetResult,

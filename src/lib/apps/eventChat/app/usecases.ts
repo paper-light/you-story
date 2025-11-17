@@ -6,7 +6,7 @@ import {
 	type ChatExpand,
 	type ChatsResponse
 } from '$lib';
-import type { OpenAIMessage, SceneApp, ScenePlan } from '$lib/apps/scene/core';
+import { StepMode, type OpenAIMessage, type SceneApp, type ScenePlan } from '$lib/apps/scene/core';
 import { sceneApp } from '$lib/apps/scene/app';
 import { LLMS, TOKENIZERS } from '$lib/shared/server';
 import { memoryApp } from '$lib/apps/memory/app';
@@ -26,19 +26,9 @@ class ChatAppImpl implements ChatApp {
 	async generate(cmd: SendUserMessageCmd): Promise<ReadableStream> {
 		// Save start messages
 		const chat = await this.getChat(cmd.chatId);
-		const userMsg = await pb.collection(Collections.Messages).create({
-			chat: cmd.chatId,
-			content: cmd.query,
-			role: MessagesRoleOptions.user,
-			status: MessagesStatusOptions.final,
-			character: chat.data.povCharacter
-		});
-		const aiMsg = await pb.collection(Collections.Messages).create({
-			chat: chat.data.id,
-			content: '',
-			role: MessagesRoleOptions.ai,
-			status: MessagesStatusOptions.streaming
-		});
+		const kind = chat.data.storyEvent ? 'story' : 'friend';
+
+		const { userMsg, aiMsg } = await this.persistMessages(cmd, chat);
 
 		// Load contexts
 		const history = this.trimMessages(chat, HISTORY_TOKEN_LIMIT);
@@ -69,7 +59,27 @@ class ChatAppImpl implements ChatApp {
 			chatId: chat.data.id
 		});
 
-		const scenePlan = await this.sceneApp.plan(policy, memRes, history);
+		const scenePlanRaw = await this.sceneApp.plan(policy, memRes, history);
+		const scenePlan =
+			kind === 'story'
+				? scenePlanRaw
+				: scenePlanRaw.steps
+						.filter((step) => step.type === 'speech' || step.type === 'thoughts')
+						.reduce(
+							(acc, step) => {
+								acc.steps[0].description += step.description;
+								return acc;
+							},
+							{
+								steps: [
+									{
+										type: StepMode.Speech,
+										description: '',
+										characterId: chat.data.friend
+									}
+								]
+							}
+						);
 
 		await pb.collection(Collections.Messages).update(userMsg.id, {
 			metadata: {
@@ -80,10 +90,11 @@ class ChatAppImpl implements ChatApp {
 		});
 		await pb.collection(Collections.Messages).delete(aiMsg.id);
 
-		return this.createSSEStream(chat, scenePlan, memRes, history);
+		return this.createSSEStream(kind, chat, scenePlan, memRes, history);
 	}
 
 	private createSSEStream(
+		kind: 'friend' | 'story',
 		chat: Chat,
 		plan: ScenePlan,
 		memRes: MemporyGetResult,
@@ -111,7 +122,7 @@ class ChatAppImpl implements ChatApp {
 								step: plan.steps[i]
 							}
 						});
-						const stepStream = sceneApp.actStream(plan, i, memRes, history);
+						const stepStream = sceneApp.actStream(kind, plan, i, memRes, history);
 
 						let accumulatedText = '';
 						const reader = stepStream.getReader();
@@ -171,6 +182,22 @@ class ChatAppImpl implements ChatApp {
 		});
 	}
 
+	private async persistMessages(cmd: SendUserMessageCmd, chat: Chat) {
+		const userMsg = await pb.collection(Collections.Messages).create({
+			chat: cmd.chatId,
+			content: cmd.query,
+			role: MessagesRoleOptions.user,
+			status: MessagesStatusOptions.final,
+			character: chat.data.povCharacter
+		});
+		const aiMsg = await pb.collection(Collections.Messages).create({
+			chat: chat.data.id,
+			content: '',
+			role: MessagesRoleOptions.ai,
+			status: MessagesStatusOptions.streaming
+		});
+		return { userMsg, aiMsg };
+	}
 	private async getChat(chatId: string): Promise<Chat> {
 		const chatRes: ChatsResponse<Notes, ChatExpand> = await pb
 			.collection(Collections.Chats)

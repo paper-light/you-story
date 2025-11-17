@@ -12,9 +12,9 @@
 	const { storyPromise } = data;
 
 	onMount(async () => {
-		const { storyEvents, chats } = await storyPromise;
+		const { storyEvents, storyChats } = await storyPromise;
 		if (storyEvents) storyEventsStore.setStoryEvents(storyEvents);
-		if (chats) chatsStore.setChats(chats);
+		if (storyChats) chatsStore.mergeChats(storyChats);
 	});
 
 	$effect(() => {
