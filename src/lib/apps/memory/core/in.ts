@@ -1,17 +1,23 @@
-import type { Memory } from './models';
-
-export type MemoryKind = 'friend' | 'character';
+import type { EventMemory, Memory, ProfileMemory, StaticMemory } from './models';
 
 export type MemoryGetCmd = {
-	kind: MemoryKind;
 	query: string;
-	tokenLimit: number;
-	povId?: string;
-	characterIds?: string[];
+	tokens: number;
+	povId: string;
+	npcIds: string[];
 	chatId: string;
+};
+export type MemporyGetResult = {
+	static: StaticMemory[];
+	event: EventMemory[];
+	profile: ProfileMemory[];
+};
+
+export type MemoryPutCmd = {
+	memories: Memory[];
 };
 
 export interface MemoryApp {
-	get(cmd: MemoryGetCmd): Promise<Memory[]>;
-	put(memory: Memory[]): Promise<void>;
+	get(cmd: MemoryGetCmd): Promise<MemporyGetResult>;
+	put(cmd: MemoryPutCmd): Promise<void>;
 }

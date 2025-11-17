@@ -2,7 +2,7 @@ import { pb, type UsersResponse, type UserExpand, Collections } from '$lib';
 
 export async function globalUserLoad() {
 	if (!pb.authStore.isValid) {
-		return { user: null, sub: null };
+		return { user: null, sub: null, stories: [], characters: [] };
 	}
 
 	const res = await pb.collection(Collections.Users).authRefresh({ expand: 'subs_via_user' });

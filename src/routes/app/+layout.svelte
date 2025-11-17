@@ -194,6 +194,20 @@
 							<Settings class="size-5 opacity-60" />
 						{/if}
 					</a>
+				{:else}
+					<a
+						href="/app/auth"
+						class="flex items-center gap-3 rounded-lg p-2 transition-colors hover:bg-base-300"
+						class:justify-center={!sidebarOpen}
+						title={!sidebarOpen ? 'Settings' : 'Auth'}
+					>
+						<p class="size-10 rounded-full bg-base-300"></p>
+						{#if sidebarOpen}
+							<div class="flex-1 overflow-hidden">
+								<div class="truncate text-sm font-semibold">Log in</div>
+							</div>
+						{/if}
+					</a>
 				{/if}
 			</div>
 		</aside>

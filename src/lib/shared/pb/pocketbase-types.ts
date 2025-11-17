@@ -11,10 +11,8 @@ export enum Collections {
 	Mfas = "_mfas",
 	Otps = "_otps",
 	Superusers = "_superusers",
-	CanonicalPatches = "canonicalPatches",
 	Characters = "characters",
 	Chats = "chats",
-	DraftPatches = "draftPatches",
 	Feedbacks = "feedbacks",
 	Messages = "messages",
 	Stories = "stories",
@@ -101,23 +99,6 @@ export type SuperusersRecord = {
 	verified?: boolean
 }
 
-export enum CanonicalPatchesTypeOptions {
-	"character" = "character",
-	"world" = "world",
-}
-export type CanonicalPatchesRecord<Tpatch = unknown> = {
-	character?: RecordIdString
-	created: IsoAutoDateString
-	description?: string
-	eventLocalSeq?: number
-	id: string
-	logSeq?: number
-	patch?: null | Tpatch
-	storyEvent?: RecordIdString
-	type?: CanonicalPatchesTypeOptions
-	updated: IsoAutoDateString
-}
-
 export type CharactersRecord<Ttags = unknown> = {
 	age?: number
 	archived?: boolean
@@ -159,22 +140,6 @@ export type ChatsRecord<Tnotes = unknown> = {
 	type?: ChatsTypeOptions
 	updated: IsoAutoDateString
 	user?: RecordIdString
-}
-
-export enum DraftPatchesTypeOptions {
-	"character" = "character",
-	"world" = "world",
-}
-export type DraftPatchesRecord<Tpatch = unknown> = {
-	character?: RecordIdString
-	chat?: RecordIdString
-	created: IsoAutoDateString
-	description?: string
-	eventLogSeq?: number
-	id: string
-	patch?: null | Tpatch
-	type?: DraftPatchesTypeOptions
-	updated: IsoAutoDateString
 }
 
 export enum FeedbacksTypeOptions {
@@ -227,6 +192,7 @@ export type StoryEventsRecord = {
 	characters?: RecordIdString[]
 	created: IsoAutoDateString
 	description?: string
+	diffMonths?: number
 	id: string
 	name?: string
 	order?: number
@@ -286,10 +252,8 @@ export type ExternalauthsResponse<Texpand = unknown> = Required<ExternalauthsRec
 export type MfasResponse<Texpand = unknown> = Required<MfasRecord> & BaseSystemFields<Texpand>
 export type OtpsResponse<Texpand = unknown> = Required<OtpsRecord> & BaseSystemFields<Texpand>
 export type SuperusersResponse<Texpand = unknown> = Required<SuperusersRecord> & AuthSystemFields<Texpand>
-export type CanonicalPatchesResponse<Tpatch = unknown, Texpand = unknown> = Required<CanonicalPatchesRecord<Tpatch>> & BaseSystemFields<Texpand>
 export type CharactersResponse<Ttags = unknown, Texpand = unknown> = Required<CharactersRecord<Ttags>> & BaseSystemFields<Texpand>
 export type ChatsResponse<Tnotes = unknown, Texpand = unknown> = Required<ChatsRecord<Tnotes>> & BaseSystemFields<Texpand>
-export type DraftPatchesResponse<Tpatch = unknown, Texpand = unknown> = Required<DraftPatchesRecord<Tpatch>> & BaseSystemFields<Texpand>
 export type FeedbacksResponse<Texpand = unknown> = Required<FeedbacksRecord> & BaseSystemFields<Texpand>
 export type MessagesResponse<Tmetadata = unknown, Texpand = unknown> = Required<MessagesRecord<Tmetadata>> & BaseSystemFields<Texpand>
 export type StoriesResponse<Tbible = unknown, Texpand = unknown> = Required<StoriesRecord<Tbible>> & BaseSystemFields<Texpand>
@@ -305,10 +269,8 @@ export type CollectionRecords = {
 	_mfas: MfasRecord
 	_otps: OtpsRecord
 	_superusers: SuperusersRecord
-	canonicalPatches: CanonicalPatchesRecord
 	characters: CharactersRecord
 	chats: ChatsRecord
-	draftPatches: DraftPatchesRecord
 	feedbacks: FeedbacksRecord
 	messages: MessagesRecord
 	stories: StoriesRecord
@@ -323,10 +285,8 @@ export type CollectionResponses = {
 	_mfas: MfasResponse
 	_otps: OtpsResponse
 	_superusers: SuperusersResponse
-	canonicalPatches: CanonicalPatchesResponse
 	characters: CharactersResponse
 	chats: ChatsResponse
-	draftPatches: DraftPatchesResponse
 	feedbacks: FeedbacksResponse
 	messages: MessagesResponse
 	stories: StoriesResponse

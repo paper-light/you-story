@@ -2,13 +2,16 @@ import { profileIndexer, eventIndexer } from '../adapters';
 import type {
 	MemoryGetCmd,
 	MemoryApp,
-	Memory,
 	ProfileIndexer,
 	EventIndexer,
 	ProfileMemory,
 	EventMemory,
-	MemoryKind
+	MemoryPutCmd,
+	StaticMemory,
+	MemporyGetResult
 } from '../core';
+
+const DAYS_TO_SEARCH_LATEST_MEMORIES = 7;
 
 export class MemoryAppImpl implements MemoryApp {
 	constructor(
@@ -16,16 +19,29 @@ export class MemoryAppImpl implements MemoryApp {
 		private readonly eventIndexer: EventIndexer
 	) {}
 
-	async get(cmd: MemoryGetCmd): Promise<Memory[]> {
-		const memories: Memory[] = [];
-		console.log(cmd);
-		return memories;
+	async get(cmd: MemoryGetCmd): Promise<MemporyGetResult> {
+		const charIds = [cmd.povId, ...cmd.npcIds];
+
+		const staticMemories = await this.getStaticMemories(cmd.chatId, cmd.tokens, charIds);
+		const chatMemories = await this.getChatMemories(cmd.query, cmd.chatId, cmd.tokens);
+		const charactersMemories = await this.getCharactersMemories(
+			cmd.query,
+			cmd.povId,
+			cmd.npcIds,
+			cmd.tokens
+		);
+
+		return {
+			static: staticMemories,
+			event: chatMemories,
+			profile: charactersMemories
+		};
 	}
 
-	async put(memories: Memory[]): Promise<void> {
+	async put(cmd: MemoryPutCmd): Promise<void> {
 		const profileMemories: ProfileMemory[] = [];
 		const eventMemories: EventMemory[] = [];
-		for (const memory of memories) {
+		for (const memory of cmd.memories) {
 			if (memory.kind === 'profile') {
 				profileMemories.push(memory);
 			} else if (memory.kind === 'event') {
@@ -39,13 +55,14 @@ export class MemoryAppImpl implements MemoryApp {
 	}
 
 	private async getStaticMemories(
-		kind: MemoryKind,
 		chatId: string,
 		tokens: number,
 		characterIds: string[]
-	): Promise<EventMemory[]> {
+	): Promise<StaticMemory[]> {
+		// get story OR real world context
+		// get static characters
 		console.log(chatId, tokens, characterIds);
-		const memories: EventMemory[] = [];
+		const memories: StaticMemory[] = [];
 
 		return memories;
 	}
@@ -55,11 +72,27 @@ export class MemoryAppImpl implements MemoryApp {
 		chatId: string,
 		tokens: number
 	): Promise<EventMemory[]> {
-		const limit = Math.floor(tokens / 1000);
-		const half = Math.floor(limit / 2);
-		const allMemories = await this.eventIndexer.search(query, half, undefined, chatId);
-		const latestMemories = await this.eventIndexer.search(query, half, undefined, chatId, 7);
+		const half = Math.floor(tokens / 2);
+		const allMemories = await this.eventIndexer.search(query, half, chatId);
+		const latestMemories = await this.eventIndexer.search(
+			query,
+			half,
+			chatId,
+			DAYS_TO_SEARCH_LATEST_MEMORIES
+		);
 		return [...allMemories, ...latestMemories];
+	}
+
+	private async getCharactersMemories(
+		query: string,
+		povId: string,
+		npcIds: string[],
+		tokens: number
+	): Promise<ProfileMemory[]> {
+		// get static characters
+		console.log(query, povId, npcIds, tokens);
+		const memories: ProfileMemory[] = [];
+		return memories;
 	}
 }
 

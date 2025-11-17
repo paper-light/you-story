@@ -1,13 +1,11 @@
-export type ProfileType = 'character' | 'user' | 'relationship';
+export type ProfileType = 'character' | 'relationship';
 
 export type EventType = 'story' | 'chat' | 'action' | 'decision';
 
 export type ProfileMemory = {
 	kind: 'profile';
 	type: ProfileType;
-	userId?: string;
-	characterId?: string;
-	relationship?: Relationship;
+	characterIds: string[];
 	content: string;
 	tokens: number;
 };
@@ -17,11 +15,13 @@ export type EventMemory = {
 	type: EventType;
 	content: string;
 	chatId: string;
+	tokens: number;
 };
 
-export type Memory = ProfileMemory | EventMemory;
-
-export type Relationship = {
-	userId?: string;
-	characterIds?: string[];
+export type StaticMemory = {
+	kind: 'static';
+	content: string;
+	tokens: number;
 };
+
+export type Memory = ProfileMemory | EventMemory | StaticMemory;

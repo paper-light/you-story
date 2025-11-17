@@ -11,6 +11,12 @@ onRecordCreate((e) => {
 		const record = new Record(col);
 		record.set('user', e.record.id);
 		txApp.save(record);
+
+		const charCol = txApp.findCollectionByNameOrId('characters');
+		const charRecord = new Record(charCol);
+		charRecord.set('user', e.record.id);
+		charRecord.set('name', e.record.get('name'));
+		txApp.save(charRecord);
 	});
 
 	// after creation
