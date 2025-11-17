@@ -1,15 +1,23 @@
-import type { Memory } from './models';
+import type { EventMemory, EventType, ProfileMemory, ProfileType, Relationship } from './models';
 
 export interface ProfileIndexer {
-	index(memory: Memory[]): Promise<void>;
+	add(memory: ProfileMemory[]): Promise<void>;
+	search(
+		query: string,
+		limit: number,
+		type?: ProfileType,
+		userId?: string,
+		characterId?: string,
+		relationships?: Relationship[]
+	): Promise<ProfileMemory[]>;
 }
 export interface EventIndexer {
-	index(memory: Memory[]): Promise<void>;
-}
-
-export interface ProfileSearcher {
-	search(query: string, limit: number): Promise<Memory[]>;
-}
-export interface EventSearcher {
-	search(query: string, limit: number): Promise<Memory[]>;
+	add(memory: EventMemory[]): Promise<void>;
+	search(
+		query: string,
+		limit: number,
+		type?: EventType,
+		chatId?: string,
+		days?: number
+	): Promise<EventMemory[]>;
 }

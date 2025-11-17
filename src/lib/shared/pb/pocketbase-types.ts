@@ -118,7 +118,7 @@ export type CanonicalPatchesRecord<Tpatch = unknown> = {
 	updated: IsoAutoDateString
 }
 
-export type CharactersRecord = {
+export type CharactersRecord<Ttags = unknown> = {
 	age?: number
 	archived?: boolean
 	avatar?: FileNameString
@@ -126,6 +126,8 @@ export type CharactersRecord = {
 	description?: string
 	id: string
 	name?: string
+	public?: boolean
+	tags?: null | Ttags
 	updated: IsoAutoDateString
 	user?: RecordIdString
 }
@@ -145,7 +147,6 @@ export enum ChatsStatusOptions {
 export enum ChatsTypeOptions {
 	"story" = "story",
 	"roleplay" = "roleplay",
-	"friend" = "friend",
 }
 export type ChatsRecord<Tnotes = unknown> = {
 	commitMode?: ChatsCommitModeOptions
@@ -286,7 +287,7 @@ export type MfasResponse<Texpand = unknown> = Required<MfasRecord> & BaseSystemF
 export type OtpsResponse<Texpand = unknown> = Required<OtpsRecord> & BaseSystemFields<Texpand>
 export type SuperusersResponse<Texpand = unknown> = Required<SuperusersRecord> & AuthSystemFields<Texpand>
 export type CanonicalPatchesResponse<Tpatch = unknown, Texpand = unknown> = Required<CanonicalPatchesRecord<Tpatch>> & BaseSystemFields<Texpand>
-export type CharactersResponse<Texpand = unknown> = Required<CharactersRecord> & BaseSystemFields<Texpand>
+export type CharactersResponse<Ttags = unknown, Texpand = unknown> = Required<CharactersRecord<Ttags>> & BaseSystemFields<Texpand>
 export type ChatsResponse<Tnotes = unknown, Texpand = unknown> = Required<ChatsRecord<Tnotes>> & BaseSystemFields<Texpand>
 export type DraftPatchesResponse<Tpatch = unknown, Texpand = unknown> = Required<DraftPatchesRecord<Tpatch>> & BaseSystemFields<Texpand>
 export type FeedbacksResponse<Texpand = unknown> = Required<FeedbacksRecord> & BaseSystemFields<Texpand>

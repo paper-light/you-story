@@ -1,9 +1,11 @@
-import type { Memory } from './models';
+import type { Memory, Relationship } from './models';
 
 export type MemoryGetCmd = {
-	space: 'friend' | 'story';
 	query: string;
 	tokenLimit: number;
+	userId?: string;
+	characterId?: string;
+	relationships?: Relationship[];
 };
 
 export interface MemoryApp {

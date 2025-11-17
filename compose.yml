@@ -16,3 +16,12 @@ services:
       dockerfile: Dockerfile
     environment:
       - ENV=${ENV}
+
+  meili:
+    image: getmeili/meilisearch:latest
+    ports:
+      - '7700:7700'
+    volumes:
+      - ./meili/data:/meili_data
+    environment:
+      - MEILI_MASTER_KEY=${MEILI_MASTER_KEY}
