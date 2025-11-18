@@ -10,6 +10,14 @@ services:
       - PB_PASSWORD=${PB_PASSWORD}
     volumes:
       - ./pb/pb_data:/pb/pb_data
+
+  meili:
+    image: getmeili/meilisearch:latest
+    volumes:
+      - ./meili/data:/meili_data
+    environment:
+      - MEILI_MASTER_KEY=${MEILI_MASTER_KEY}
+
   app:
     build:
       context: .
@@ -27,12 +35,6 @@ services:
       - VOYAGE_API_KEY=${VOYAGE_API_KEY}
       - GROK_API_KEY=${GROK_API_KEY}
       - OPENAI_API_KEY=${OPENAI_API_KEY}
-
-  meili:
-    image: getmeili/meilisearch:latest
-    ports:
-      - '7700:7700'
-    volumes:
-      - ./meili/data:/meili_data
-    environment:
-      - MEILI_MASTER_KEY=${MEILI_MASTER_KEY}
+    depends_on:
+      - pb
+      - meili
