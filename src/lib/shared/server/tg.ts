@@ -4,7 +4,7 @@ import { pb, type ChatsResponse, type UserExpand, type UsersResponse } from '../
 import { nanoid } from '../utils';
 
 const TELEGRAM_API_URL = 'https://api.telegram.org/bot';
-const WEBHOOK_URL = 'https://storyteller.space';
+const WEBHOOK_URL = 'https://ys.cogitosoftware.nl';
 
 export async function handleUpdate(characterId: string, update: any) {
 	const char = await pb.collection('characters').getOne(characterId);
@@ -161,7 +161,7 @@ async function initializeTelegramBots() {
 			for (const char of chars) {
 				startPolling(char.id);
 			}
-		} else {
+		} else if (ENV === 'production') {
 			console.log(`Setting webhooks for ${chars.length} Telegram bot(s)...`);
 			for (const char of chars) {
 				await setWebhook(char.id).catch((err) => {
