@@ -9,3 +9,7 @@ export const TOKENIZERS = {
 	[LLMS.GROK_4_FAST_NON_REASONING]: encoding_for_model('gpt-4o-mini'),
 	[LLMS.GROK_4_FAST]: encoding_for_model('gpt-4o-mini')
 };
+
+export const EMBEDDERS = {
+	VOYAGE_LITE: 'voyage-3.5-lite'
+};

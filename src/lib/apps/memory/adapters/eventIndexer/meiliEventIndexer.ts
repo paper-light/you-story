@@ -4,7 +4,9 @@ import { MEILI_URL, MEILI_MASTER_KEY } from '$env/static/private';
 import { nanoid } from '$lib/shared';
 
 import type { EventMemory, EventIndexer, EventType } from '../../core';
+import { EMBEDDERS, voyage } from '$lib/shared/server';
 
+const BATCH_SIZE = 128;
 const VOYAGE_EMBEDDER = 'voyage';
 const SEARCH_RATIO = 0.75;
 const CHUNK_TOKEN_LIMIT = 256;
@@ -16,6 +18,7 @@ type EventDoc = {
 	chatId: string;
 	createdAt: string;
 	tokens: number;
+	_vectors: Record<string, Record<string, number[]>>;
 };
 
 export const EVENT_EMBEDDERS = {
@@ -44,9 +47,33 @@ export class MeiliEventIndexer implements EventIndexer {
 
 	async add(memories: EventMemory[]): Promise<void> {
 		const docs: EventDoc[] = [];
-		for (const memory of memories) {
+		const validMemories = memories.filter((memory) => {
 			if (memory.tokens > CHUNK_TOKEN_LIMIT) {
 				console.warn('Event memory tokens are too high', memory);
+				return false;
+			}
+			return true;
+		});
+
+		const embedTasks = [];
+		for (let i = 0; i < validMemories.length; i += BATCH_SIZE) {
+			const batch = validMemories.slice(i, i + BATCH_SIZE).map((memory) => memory.content);
+			embedTasks.push(
+				voyage.embed({
+					input: batch,
+					model: EMBEDDERS.VOYAGE_LITE
+				})
+			);
+		}
+		const embeddings = (await Promise.all(embedTasks))
+			.flatMap((res) => res.data)
+			.map((res) => res?.embedding);
+
+		for (let i = 0; i < validMemories.length; i++) {
+			const memory = validMemories[i];
+			const embedding = embeddings[i];
+			if (!embedding) {
+				console.warn('Embedding is not valid', memory);
 				continue;
 			}
 
@@ -57,7 +84,12 @@ export class MeiliEventIndexer implements EventIndexer {
 				chatId: memory.chatId,
 				content: memory.content,
 				createdAt: new Date().toISOString(),
-				tokens: memory.tokens
+				tokens: memory.tokens,
+				_vectors: {
+					[VOYAGE_EMBEDDER]: {
+						embeddings: embedding
+					}
+				}
 			};
 			docs.push(doc);
 		}
@@ -81,7 +113,19 @@ export class MeiliEventIndexer implements EventIndexer {
 			f += ` AND createdAt >= "${start.toISOString()}"`;
 		}
 
+		const vector = (
+			await voyage.embed({
+				input: [query],
+				model: EMBEDDERS.VOYAGE_LITE
+			})
+		).data?.[0]?.embedding;
+		if (!vector) {
+			console.warn('Vector is not valid', query);
+			return [];
+		}
+
 		const res = await this.index.search(query, {
+			vector,
 			filter: f,
 			limit,
 			hybrid: {
