@@ -5,6 +5,7 @@ import { nanoid } from '$lib/shared';
 
 import type { EventMemory, EventIndexer, EventType, Importance } from '../../core';
 import { EMBEDDERS, voyage } from '$lib/shared/server';
+import { building } from '$app/environment';
 
 const BATCH_SIZE = 128;
 const OUTPUT_DIMENSION = 1024;
@@ -31,10 +32,12 @@ export const EVENT_EMBEDDERS = {
 };
 
 export class MeiliEventIndexer implements EventIndexer {
-	private readonly client: MeiliSearch;
-	private readonly index: Index<EventDoc>;
+	private readonly client?: MeiliSearch;
+	private readonly index?: Index<EventDoc>;
 
 	constructor() {
+		if (building) return;
+
 		this.client = new MeiliSearch({
 			host: MEILI_URL,
 			apiKey: MEILI_MASTER_KEY
@@ -43,11 +46,13 @@ export class MeiliEventIndexer implements EventIndexer {
 	}
 
 	async migrate(): Promise<void> {
+		if (!this.index) return;
 		await this.index.updateEmbedders(EVENT_EMBEDDERS);
 		await this.index.updateFilterableAttributes(['type', 'chatId', 'createdAt', 'importance']);
 	}
 
 	async add(memories: EventMemory[]): Promise<void> {
+		if (!this.index) return;
 		if (memories.length === 0) {
 			console.log('No event memories to index');
 			return;
@@ -115,7 +120,7 @@ export class MeiliEventIndexer implements EventIndexer {
 		}
 
 		try {
-			const task = await this.index.addDocuments(docs, { primaryKey: 'id' });
+			const task = await this.index!.addDocuments(docs, { primaryKey: 'id' });
 			console.log(`Successfully indexed ${docs.length} event documents. Task ID: ${task.taskUid}`);
 		} catch (error) {
 			console.error('Error indexing event documents:', error);
@@ -152,7 +157,7 @@ export class MeiliEventIndexer implements EventIndexer {
 			return [];
 		}
 
-		const res = await this.index.search(query, {
+		const res = await this.index!.search(query, {
 			vector,
 			filter: f,
 			limit,

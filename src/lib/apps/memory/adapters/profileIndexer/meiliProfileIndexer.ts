@@ -5,6 +5,7 @@ import { nanoid } from '$lib/shared';
 import { EMBEDDERS, voyage } from '$lib/shared/server';
 
 import type { ProfileMemory, ProfileIndexer, ProfileType, Importance } from '../../core';
+import { building } from '$app/environment';
 
 const BATCH_SIZE = 128;
 
@@ -33,10 +34,11 @@ export const PROFILE_EMBEDDERS = {
 };
 
 export class MeiliProfileIndexer implements ProfileIndexer {
-	private readonly client: MeiliSearch;
-	private readonly index: Index<ProfileDoc>;
+	private readonly client?: MeiliSearch;
+	private readonly index?: Index<ProfileDoc>;
 
 	constructor() {
+		if (building) return;
 		this.client = new MeiliSearch({
 			host: MEILI_URL,
 			apiKey: MEILI_MASTER_KEY
@@ -45,6 +47,7 @@ export class MeiliProfileIndexer implements ProfileIndexer {
 	}
 
 	async migrate(): Promise<void> {
+		if (!this.index) return;
 		await this.index.updateEmbedders(PROFILE_EMBEDDERS);
 		await this.index.updateFilterableAttributes([
 			'type',
@@ -55,6 +58,7 @@ export class MeiliProfileIndexer implements ProfileIndexer {
 	}
 
 	async add(memories: ProfileMemory[]): Promise<void> {
+		if (!this.index) return;
 		if (memories.length === 0) {
 			console.log('No profile memories to index');
 			return;
@@ -156,7 +160,7 @@ export class MeiliProfileIndexer implements ProfileIndexer {
 			return [];
 		}
 
-		const res = await this.index.search(query, {
+		const res = await this.index!.search(query, {
 			vector,
 			filter: f,
 			limit,
