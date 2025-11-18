@@ -186,7 +186,20 @@
 						class:justify-center={!sidebarOpen}
 						title={!sidebarOpen ? 'Settings' : ''}
 					>
-						<img src={userStore.avatarUrl} alt={user.name || 'User'} class="size-10 rounded-full" />
+						{#if userStore.avatarUrl}
+							<img
+								src={userStore.avatarUrl}
+								alt={user.name}
+								class="size-10 rounded-full text-center"
+							/>
+						{:else}
+							<div
+								class="flex size-10 items-center justify-center rounded-full bg-base-300 text-center"
+							>
+								{user.name?.at(0)?.toUpperCase() ?? 'U'}
+							</div>
+						{/if}
+
 						{#if sidebarOpen}
 							<div class="flex-1 overflow-hidden">
 								<div class="truncate text-sm font-semibold">{user.name || 'User'}</div>
