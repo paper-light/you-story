@@ -1,23 +1,6 @@
-name: youstory-local
+name: youstory
 
 services:
-  pb:
-    build:
-      context: pb
-      dockerfile: Dockerfile
-    environment:
-      - PB_EMAIL=${PB_EMAIL}
-      - PB_PASSWORD=${PB_PASSWORD}
-    volumes:
-      - ./pb/pb_data:/pb/pb_data
-
-  meili:
-    image: getmeili/meilisearch:latest
-    volumes:
-      - ./meili/data:/meili_data
-    environment:
-      - MEILI_MASTER_KEY=${MEILI_MASTER_KEY}
-
   app:
     build:
       context: .
@@ -25,7 +8,7 @@ services:
       args:
         - ENV=production
         - PUBLIC_PB_URL=https://pb-ys.cogitosoftware.nl
-        - MEILI_URL=http://meili:7700
+        - MEILI_URL=https://meili-ys.cogitosoftware.nl
         - LANGFUSE_PUBLIC_KEY=pk-lf-ec076b61-09a8-40d4-9857-8bce360e67e0
         - LANGFUSE_BASE_URL=https://us.cloud.langfuse.com
         - PB_EMAIL=${PB_EMAIL}
@@ -38,7 +21,7 @@ services:
     environment:
       - ENV=production
       - PUBLIC_PB_URL=https://pb-ys.cogitosoftware.nl
-      - MEILI_URL=http://meili:7700
+      - MEILI_URL=https://meili-ys.cogitosoftware.nl
       - LANGFUSE_PUBLIC_KEY=pk-lf-ec076b61-09a8-40d4-9857-8bce360e67e0
       - LANGFUSE_BASE_URL=https://us.cloud.langfuse.com
       - PB_EMAIL=${PB_EMAIL}
@@ -48,6 +31,3 @@ services:
       - VOYAGE_API_KEY=${VOYAGE_API_KEY}
       - GROK_API_KEY=${GROK_API_KEY}
       - OPENAI_API_KEY=${OPENAI_API_KEY}
-    depends_on:
-      - pb
-      - meili
