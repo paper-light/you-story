@@ -53,7 +53,8 @@ export class MeiliProfileIndexer implements ProfileIndexer {
 			'type',
 			'characterIds',
 			'createdAt',
-			'importance'
+			'importance',
+			'charactersCount'
 		]);
 	}
 
@@ -145,7 +146,7 @@ export class MeiliProfileIndexer implements ProfileIndexer {
 	async search(query: string, tokens: number, charIds: string[]): Promise<ProfileMemory[]> {
 		const limit = Math.floor(tokens / CHUNK_TOKEN_LIMIT);
 
-		const f = `characterIds IN ["${charIds.join('","')}"]`;
+		const f = this.buildProfilesFilter(charIds);
 
 		const vector = (
 			await voyage.embed({
@@ -180,6 +181,31 @@ export class MeiliProfileIndexer implements ProfileIndexer {
 			importance: hit.importance
 		}));
 		return memories;
+	}
+
+	private buildProfilesFilter(charIds: string[]): string {
+		if (charIds.length === 0) return '';
+
+		const personalFilter = `(charactersCount = 1 AND characterIds IN ["${charIds.join('","')}"])`;
+
+		const pairFilters: string[] = [];
+
+		for (let i = 0; i < charIds.length; i++) {
+			for (let j = i + 1; j < charIds.length; j++) {
+				const a = charIds[i];
+				const b = charIds[j];
+
+				pairFilters.push(
+					`(charactersCount = 2 AND characterIds IN ["${a}"] AND characterIds IN ["${b}"])`
+				);
+			}
+		}
+
+		if (pairFilters.length === 0) {
+			return personalFilter;
+		}
+
+		return `${personalFilter} OR ${pairFilters.join(' OR ')}`;
 	}
 }
 

@@ -4,6 +4,6 @@ services:
   meili:
     image: getmeili/meilisearch:latest
     volumes:
-      - ./meili/data:/meili_data
+      - ./data:/meili_data
     environment:
       - MEILI_MASTER_KEY=${MEILI_MASTER_KEY}

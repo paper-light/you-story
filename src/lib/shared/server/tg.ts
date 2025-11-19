@@ -156,7 +156,7 @@ async function initializeTelegramBots() {
 	try {
 		const chars = await pb.collection('characters').getFullList({ filter: 'tgBotToken != ""' });
 
-		if (ENV === 'local') {
+		if (ENV) {
 			console.log(`Starting polling for ${chars.length} Telegram bot(s)...`);
 			for (const char of chars) {
 				startPolling(char.id);
