@@ -1,196 +1,226 @@
 <script lang="ts">
 	import {
-		Heart,
-		Shield,
-		Lock,
-		Download,
-		Users,
-		Calendar,
-		BookOpen,
-		Sparkles
+		Sparkles,
+		ArrowRight,
+		Ghost,
+		Crown,
+		HeartHandshake,
+		Wand2,
+		Fingerprint
 	} from 'lucide-svelte';
 </script>
 
-<div class="bg-base-100">
+<div class="min-h-screen bg-base-100 overflow-x-hidden selection:bg-primary selection:text-primary-content">
 	<!-- Hero Section -->
-	<section class="relative flex min-h-screen items-center justify-center overflow-hidden">
-		<!-- Background gradient -->
-		<div
-			class="absolute inset-0 bg-linear-to-br from-primary/10 via-base-100 to-secondary/10"
-		></div>
+	<section class="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
+		<!-- Dynamic Background -->
+		<div class="absolute inset-0 z-0">
+			<div class="absolute inset-0 bg-base-100"></div>
+			<div class="absolute top-[-20%] right-[-10%] w-[800px] h-[800px] bg-primary/20 rounded-full blur-[120px] animate-pulse-slow"></div>
+			<div class="absolute bottom-[-20%] left-[-10%] w-[600px] h-[600px] bg-secondary/20 rounded-full blur-[100px] animate-pulse-slower"></div>
+			<!-- Grid Pattern Overlay -->
+			<div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4wNSkiLz48L3N2Zz4=')] opacity-50"></div>
+		</div>
 
-		<!-- Decorative elements -->
-		<div class="absolute top-20 left-10 h-72 w-72 rounded-full bg-primary/5 blur-3xl"></div>
-		<div class="absolute right-10 bottom-20 h-96 w-96 rounded-full bg-secondary/5 blur-3xl"></div>
+		<div class="container relative z-10 mx-auto px-6 pt-20 pb-32 text-center">
+			<div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-base-200/50 backdrop-blur-md border border-base-content/5 mb-8 animate-fade-in-up">
+				<Sparkles class="w-4 h-4 text-primary" />
+				<span class="text-sm font-medium text-base-content/80">Experience the Impossible</span>
+			</div>
 
-		<div class="relative z-10 container mx-auto px-4 text-center sm:px-6 lg:px-8">
-			<div class="mx-auto max-w-4xl space-y-8">
-				<!-- Main heading -->
-				<h1 class="text-5xl leading-tight font-bold text-base-content sm:text-6xl lg:text-7xl">
-					Live Your Best Fantasies
-					<br />
-					<span class="text-primary">with AI Characters</span>
-				</h1>
+			<h1 class="max-w-5xl mx-auto text-6xl md:text-8xl font-black tracking-tight leading-tight mb-8 animate-fade-in-up delay-100">
+				Live the <span class="text-transparent bg-clip-text bg-linear-to-r from-primary via-secondary to-accent">Unlived</span>
+			</h1>
 
-				<!-- Subheading -->
-				<p class="mx-auto max-w-2xl text-xl leading-relaxed text-base-content/70 sm:text-2xl">
-					Create immersive stories with any character you can imagine. Experience deep, engaging
-					narratives powered by advanced AI technology.
-				</p>
+			<p class="max-w-2xl mx-auto text-xl md:text-2xl text-base-content/70 leading-relaxed mb-12 animate-fade-in-up delay-200">
+				Step into a reality where you make the rules. Explore fantasies, connections, and adventures that exist only in your wildest dreams.
+			</p>
 
-				<!-- CTA Buttons -->
-				<div class="flex flex-col items-center justify-center gap-4 pt-4 sm:flex-row">
-					<a href="/app/auth" class="btn px-8 text-lg btn-lg btn-primary">
-						<Sparkles class="h-5 w-5" />
-						Start Creating
-					</a>
+			<div class="flex flex-col sm:flex-row items-center justify-center gap-6 animate-fade-in-up delay-300">
+				<a href="/app/auth" class="group relative px-8 py-4 bg-primary text-primary-content font-bold text-lg rounded-2xl overflow-hidden transition-all hover:scale-105 hover:shadow-[0_0_40px_-10px_var(--color-primary)]">
+					<div class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+					<span class="relative flex items-center gap-2">
+						Start Your Story
+						<ArrowRight class="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+					</span>
+				</a>
+				<a href="#features" class="text-base-content/70 hover:text-base-content font-medium transition-colors">
+					Explore Features
+				</a>
+			</div>
+		</div>
+
+		<!-- Floating UI Elements (Decorative) -->
+		<div class="absolute top-1/4 left-10 hidden lg:block animate-float-slow">
+			<div class="glass-card p-4 rounded-2xl flex items-center gap-4 max-w-xs">
+				<div class="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center">
+					<HeartHandshake class="w-5 h-5 text-accent" />
 				</div>
-
-				<!-- Trust indicator -->
-				<div class="flex items-center justify-center gap-2 pt-8 text-sm text-base-content/60">
-					<Shield class="h-4 w-4" />
-					<span>Fully encrypted • Your data, your control</span>
+				<div>
+					<div class="text-xs text-base-content/50">Current Status</div>
+					<div class="text-sm font-bold">Deeply Connected</div>
 				</div>
 			</div>
 		</div>
 
-		<!-- Scroll indicator -->
-		<div class="absolute bottom-8 left-1/2 -translate-x-1/2 transform animate-bounce">
-			<div class="flex h-10 w-6 justify-center rounded-full border-2 border-base-content/30">
-				<div class="mt-2 h-3 w-1 rounded-full bg-base-content/30"></div>
-			</div>
-		</div>
-	</section>
-
-	<!-- Privacy & Security Section -->
-	<section id="privacy" class="bg-base-200 py-24">
-		<div class="container mx-auto px-4 sm:px-6 lg:px-8">
-			<div class="mx-auto max-w-4xl">
-				<div class="card bg-base-100 shadow-xl">
-					<div class="card-body p-8 sm:p-12">
-						<div class="mb-6 flex items-start gap-4">
-							<div class="rounded-lg bg-primary/10 p-3">
-								<Lock class="h-8 w-8 text-primary" />
-							</div>
-							<div class="flex-1">
-								<h2 class="mb-4 text-3xl font-bold text-base-content">
-									Your Privacy is Our Priority
-								</h2>
-								<div class="space-y-4 text-lg leading-relaxed text-base-content/80">
-									<p>
-										All sensitive story data is <strong class="text-base-content"
-											>fully encrypted</strong
-										> in our database. Your intimate stories remain private and secure.
-									</p>
-									<p>
-										You have complete control: delete your stories at any time, or <strong
-											class="text-base-content">export a backup</strong
-										> to keep them safe on your own device.
-									</p>
-									<div class="flex items-center gap-2 pt-2">
-										<Download class="h-5 w-5 text-primary" />
-										<span>Export your data anytime • No questions asked</span>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
+		<div class="absolute bottom-1/4 right-10 hidden lg:block animate-float-slower">
+			<div class="glass-card p-4 rounded-2xl flex items-center gap-4 max-w-xs">
+				<div class="w-10 h-10 rounded-full bg-secondary/20 flex items-center justify-center">
+					<Crown class="w-5 h-5 text-secondary" />
+				</div>
+				<div>
+					<div class="text-xs text-base-content/50">Achievement</div>
+					<div class="text-sm font-bold">Ruler of Worlds</div>
 				</div>
 			</div>
 		</div>
 	</section>
 
-	<!-- Features Section -->
-	<section id="features" class="bg-base-100 py-24">
-		<div class="container mx-auto px-4 sm:px-6 lg:px-8">
-			<div class="mb-16 text-center">
-				<h2 class="mb-4 text-4xl font-bold text-base-content sm:text-5xl">
-					Create Immersive Stories
-				</h2>
-				<p class="mx-auto max-w-2xl text-xl text-base-content/70">
-					Experience deep, engaging narratives powered by advanced AI technology. Bring any
-					character you can imagine to life in vivid, compelling stories.
-				</p>
-			</div>
-
-			<div class="mx-auto grid max-w-6xl gap-8 md:grid-cols-3">
-				<!-- Characters Feature -->
-				<div class="card bg-base-200 shadow-lg transition-shadow hover:shadow-xl">
-					<div class="card-body p-8">
-						<div class="mb-4 w-fit rounded-lg bg-primary/10 p-4">
-							<Users class="h-8 w-8 text-primary" />
-						</div>
-						<h3 class="mb-3 text-2xl font-bold text-base-content">Any Character You Imagine</h3>
-						<p class="text-lg leading-relaxed text-base-content/70">
-							Create and interact with any character you can imagine. Rich personalities and
-							compelling traits bring your stories to life with authentic, engaging interactions.
-						</p>
+	<!-- Value Proposition Section -->
+	<section id="features" class="py-32 relative">
+		<div class="container mx-auto px-6">
+			<div class="grid md:grid-cols-3 gap-12">
+				<!-- Feature 1 -->
+				<div class="group p-8 rounded-3xl bg-base-200/30 hover:bg-base-200/50 border border-base-content/5 transition-all hover:-translate-y-2 duration-300">
+					<div class="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+						<Ghost class="w-7 h-7 text-primary" />
 					</div>
+					<h3 class="text-2xl font-bold mb-4">No Judgment</h3>
+					<p class="text-base-content/70 leading-relaxed">
+						Your private world. Express your deepest desires and explore scenarios you'd never dare in reality. Total freedom, zero consequences.
+					</p>
 				</div>
 
-				<!-- Events Feature -->
-				<div class="card bg-base-200 shadow-lg transition-shadow hover:shadow-xl">
-					<div class="card-body p-8">
-						<div class="mb-4 w-fit rounded-lg bg-secondary/10 p-4">
-							<Calendar class="h-8 w-8 text-secondary" />
-						</div>
-						<h3 class="mb-3 text-2xl font-bold text-base-content">Engaging Narratives</h3>
-						<p class="text-lg leading-relaxed text-base-content/70">
-							Experience deep, engaging narratives crafted with advanced AI. Every moment is
-							designed to immerse you in vivid, compelling stories that feel completely real.
-						</p>
+				<!-- Feature 2 -->
+				<div class="group p-8 rounded-3xl bg-base-200/30 hover:bg-base-200/50 border border-base-content/5 transition-all hover:-translate-y-2 duration-300 delay-100">
+					<div class="w-14 h-14 rounded-2xl bg-secondary/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+						<Wand2 class="w-7 h-7 text-secondary" />
 					</div>
+					<h3 class="text-2xl font-bold mb-4">Infinite Possibilities</h3>
+					<p class="text-base-content/70 leading-relaxed">
+						From medieval kingdoms to cyberpunk cities. Be a hero, a villain, or a lover. The only limit is your imagination.
+					</p>
 				</div>
 
-				<!-- Stories Feature -->
-				<div class="card bg-base-200 shadow-lg transition-shadow hover:shadow-xl">
-					<div class="card-body p-8">
-						<div class="mb-4 w-fit rounded-lg bg-accent/10 p-4">
-							<BookOpen class="h-8 w-8 text-accent" />
-						</div>
-						<h3 class="mb-3 text-2xl font-bold text-base-content">Advanced AI Technology</h3>
-						<p class="text-lg leading-relaxed text-base-content/70">
-							Powered by cutting-edge AI, your stories come alive with rich detail and emotional
-							depth. Experience narratives that adapt and evolve based on your imagination.
-						</p>
+				<!-- Feature 3 -->
+				<div class="group p-8 rounded-3xl bg-base-200/30 hover:bg-base-200/50 border border-base-content/5 transition-all hover:-translate-y-2 duration-300 delay-200">
+					<div class="w-14 h-14 rounded-2xl bg-accent/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+						<Fingerprint class="w-7 h-7 text-accent" />
 					</div>
+					<h3 class="text-2xl font-bold mb-4">Uniquely Yours</h3>
+					<p class="text-base-content/70 leading-relaxed">
+						AI that learns your style and preferences. Every interaction is tailored to you, creating a bond that feels genuinely real.
+					</p>
 				</div>
 			</div>
 		</div>
 	</section>
 
-	<!-- Final CTA Section -->
-	<section class="bg-linear-to-br from-primary/10 via-base-100 to-secondary/10 py-24">
-		<div class="container mx-auto px-4 text-center sm:px-6 lg:px-8">
-			<div class="mx-auto max-w-3xl space-y-8">
-				<div class="mb-4 inline-flex items-center justify-center rounded-full bg-primary/10 p-4">
-					<Heart class="h-12 w-12 text-primary" />
+	<!-- Immersion/How it works Section -->
+	<section class="py-32 bg-base-200/50 relative overflow-hidden">
+		<!-- Decorative Blur -->
+		<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[1000px] bg-primary/5 rounded-full blur-[150px]"></div>
+
+		<div class="container relative z-10 mx-auto px-6">
+			<div class="max-w-4xl mx-auto text-center mb-20">
+				<h2 class="text-4xl md:text-6xl font-bold mb-6">How Your World Comes Alive</h2>
+				<p class="text-xl text-base-content/70">Three simple steps to escape reality.</p>
+			</div>
+
+			<div class="grid md:grid-cols-3 gap-8 relative">
+				<!-- Connecting Line (Desktop) -->
+				<div class="hidden md:block absolute top-12 left-[16%] right-[16%] h-0.5 bg-linear-to-r from-transparent via-base-content/10 to-transparent"></div>
+
+				<!-- Step 1 -->
+				<div class="relative text-center">
+					<div class="w-24 h-24 mx-auto bg-base-100 rounded-full border-4 border-base-200 flex items-center justify-center mb-6 relative z-10 shadow-xl">
+						<span class="text-3xl font-black text-primary">1</span>
+					</div>
+					<h3 class="text-xl font-bold mb-2">Choose a Persona</h3>
+					<p class="text-base-content/60">Pick who you want to be and who you want to meet.</p>
 				</div>
-				<h2 class="text-4xl font-bold text-base-content sm:text-5xl">Ready to Begin Your Story?</h2>
-				<p class="text-xl text-base-content/70">
-					Start creating immersive stories with any character you can imagine. Experience deep,
-					engaging narratives powered by advanced AI technology.
-				</p>
-				<div class="pt-4">
-					<a href="/app/auth" class="btn px-12 text-lg btn-lg btn-primary"> Get Started Free </a>
+
+				<!-- Step 2 -->
+				<div class="relative text-center">
+					<div class="w-24 h-24 mx-auto bg-base-100 rounded-full border-4 border-base-200 flex items-center justify-center mb-6 relative z-10 shadow-xl">
+						<span class="text-3xl font-black text-secondary">2</span>
+					</div>
+					<h3 class="text-xl font-bold mb-2">Set the Scene</h3>
+					<p class="text-base-content/60">Define the world, the mood, and the stakes.</p>
+				</div>
+
+				<!-- Step 3 -->
+				<div class="relative text-center">
+					<div class="w-24 h-24 mx-auto bg-base-100 rounded-full border-4 border-base-200 flex items-center justify-center mb-6 relative z-10 shadow-xl">
+						<span class="text-3xl font-black text-accent">3</span>
+					</div>
+					<h3 class="text-xl font-bold mb-2">Live the Moment</h3>
+					<p class="text-base-content/60">Dive in. The story reacts to your every move.</p>
 				</div>
 			</div>
+		</div>
+	</section>
+
+	<!-- CTA Section -->
+	<section class="py-32 relative overflow-hidden">
+		<div class="absolute inset-0 bg-linear-to-br from-primary/20 via-base-100 to-secondary/20 opacity-50"></div>
+		
+		<div class="container relative z-10 mx-auto px-6 text-center">
+			<h2 class="text-5xl md:text-7xl font-black mb-8 tracking-tight">
+				Your Story Begins <span class="text-primary">Now</span>
+			</h2>
+			<p class="text-xl md:text-2xl text-base-content/70 mb-12 max-w-2xl mx-auto">
+				Don't just read about adventures. Live them.
+			</p>
+			<a href="/app/auth" class="btn btn-primary btn-lg px-12 text-xl rounded-2xl h-16 shadow-[0_0_30px_-5px_var(--color-primary)] hover:shadow-[0_0_50px_-5px_var(--color-primary)] hover:scale-105 transition-all duration-300 border-none">
+				Enter the Portal
+			</a>
 		</div>
 	</section>
 </div>
 
 <style>
-	@keyframes bounce {
-		0%,
-		100% {
-			transform: translateY(0);
-		}
-		50% {
-			transform: translateY(-10px);
-		}
+	.glass-card {
+		background: rgba(255, 255, 255, 0.05);
+		backdrop-filter: blur(10px);
+		border: 1px solid rgba(255, 255, 255, 0.1);
 	}
 
-	.animate-bounce {
-		animation: bounce 2s infinite;
+	.animate-pulse-slow {
+		animation: pulse 8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+	}
+
+	.animate-pulse-slower {
+		animation: pulse 12s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+	}
+
+	.animate-float-slow {
+		animation: float 6s ease-in-out infinite;
+	}
+
+	.animate-float-slower {
+		animation: float 8s ease-in-out infinite reverse;
+	}
+
+	.animate-fade-in-up {
+		animation: fadeInUp 0.8s ease-out forwards;
+		opacity: 0;
+		transform: translateY(20px);
+	}
+
+	.delay-100 { animation-delay: 100ms; }
+	.delay-200 { animation-delay: 200ms; }
+	.delay-300 { animation-delay: 300ms; }
+
+	@keyframes float {
+		0%, 100% { transform: translateY(0); }
+		50% { transform: translateY(-20px); }
+	}
+
+	@keyframes fadeInUp {
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
 	}
 </style>

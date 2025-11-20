@@ -11,28 +11,44 @@
 	<!-- Main Content -->
 	<div class="drawer-content flex min-h-screen flex-col">
 		<!-- Transparent Header -->
-		<header class="fixed top-0 z-50 w-full">
-			<div class="absolute inset-0 bg-base-100/80 backdrop-blur-md"></div>
+		<header class="fixed top-0 z-50 w-full transition-all duration-300">
+			<div
+				class="absolute inset-0 border-b border-base-content/5 bg-base-100/70 backdrop-blur-xl"
+			></div>
 			<nav class="relative container mx-auto px-4 sm:px-6 lg:px-8">
 				<div class="flex h-16 items-center justify-between">
 					<!-- Logo -->
-					<a href="/" class="flex items-center gap-2 text-lg font-bold text-base-content">
-						<Heart class="size-8 text-primary" />
-						<span>YouStory</span>
+					<a href="/" class="group flex items-center gap-2 text-xl font-black tracking-tight">
+						<div class="relative">
+							<Heart
+								class="size-8 text-primary transition-transform duration-300 group-hover:scale-110"
+							/>
+							<div
+								class="absolute inset-0 bg-primary/50 opacity-0 blur-lg transition-opacity duration-300 group-hover:opacity-100"
+							></div>
+						</div>
+						<span class="bg-linear-to-r from-primary to-secondary bg-clip-text text-transparent"
+							>YouStory</span
+						>
 					</a>
 
 					<!-- Desktop Navigation -->
-					<div class="hidden md:flex md:items-center md:gap-6">
-						<div class="flex items-center gap-3">
+					<div class="hidden md:flex md:items-center md:gap-8">
+						<div class="flex items-center gap-4">
 							<ThemeController />
-							<a href="/app/auth" class="btn btn-primary"> Get Started Free </a>
+							<a
+								href="/app/auth"
+								class="btn border-none shadow-[0_0_20px_-5px_var(--color-primary)] transition-all duration-300 btn-primary hover:shadow-[0_0_30px_-5px_var(--color-primary)]"
+							>
+								Get Started Free
+							</a>
 						</div>
 					</div>
 
 					<!-- Mobile Menu Button -->
 					<label
 						for="mobile-drawer"
-						class="drawer-button btn p-2 text-base-content btn-ghost md:hidden"
+						class="drawer-button btn btn-square btn-ghost md:hidden"
 						aria-label="Toggle menu"
 					>
 						<Menu class="h-6 w-6" />
@@ -47,54 +63,91 @@
 		</main>
 
 		<!-- Footer -->
-		<footer class="footer bg-base-200 p-10 text-base-content md:footer-horizontal">
-			<!-- <nav>
-				<h6 class="footer-title">Navigation</h6>
-				<a href="#features" class="link link-hover">Features</a>
-				<a href="#privacy" class="link link-hover">Privacy</a>
-				<a href="/app/auth" class="link link-hover">Sign In</a>
-			</nav> -->
+		<footer
+			class="footer border-t border-base-content/5 bg-base-200/50 p-10 text-base-content backdrop-blur-sm md:footer-horizontal"
+		>
 			<nav>
-				<h6 class="footer-title">Legal</h6>
-				<a href="/legal/terms-and-conditions" class="link link-hover">Terms & Conditions</a>
-				<a href="/legal/privacy-policy" class="link link-hover">Privacy Policy</a>
+				<h6 class="footer-title opacity-50">Legal</h6>
+				<a
+					href="/legal/terms-and-conditions"
+					class="link link-hover transition-colors hover:text-primary">Terms & Conditions</a
+				>
+				<a href="/legal/privacy-policy" class="link link-hover transition-colors hover:text-primary"
+					>Privacy Policy</a
+				>
 			</nav>
 			<aside>
-				<h6 class="footer-title">YouStory</h6>
-				<p class="text-base-content/70">© 2025 YouStory. All rights reserved.</p>
+				<div class="mb-2 flex items-center gap-2 font-bold">
+					<Heart class="size-5 text-primary" />
+					<span>YouStory</span>
+				</div>
+				<p class="text-base-content/60">© 2025 YouStory. All rights reserved.</p>
 			</aside>
 		</footer>
 	</div>
 
 	<!-- Mobile Sidebar -->
-	<div class="drawer-side">
-		<label for="mobile-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
-		<aside class="min-h-full w-80 bg-base-200 p-4">
-			<div class="mb-6 flex items-center gap-2 border-b border-base-300 pb-4">
-				<Heart class="h-6 w-6 text-primary" />
-				<span class="text-lg font-bold text-base-content">YouStory</span>
+	<div class="drawer-side z-50">
+		<label for="mobile-drawer" aria-label="close sidebar" class="drawer-overlay backdrop-blur-sm"
+		></label>
+		<aside
+			class="min-h-full w-80 border-l border-base-content/5 bg-base-100/95 p-6 backdrop-blur-xl"
+		>
+			<div class="mb-8 flex items-center justify-between">
+				<div class="flex items-center gap-2">
+					<Heart class="h-6 w-6 text-primary" />
+					<span
+						class="bg-linear-to-r from-primary to-secondary bg-clip-text text-xl font-black text-transparent"
+						>YouStory</span
+					>
+				</div>
+				<label for="mobile-drawer" class="btn btn-square btn-ghost btn-sm">
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						class="h-6 w-6"
+						fill="none"
+						viewBox="0 0 24 24"
+						stroke="currentColor"
+						><path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M6 18L18 6M6 6l12 12"
+						/></svg
+					>
+				</label>
 			</div>
 
-			<nav class="flex flex-col gap-4">
-				<!-- <a href="#features" class="link text-base-content link-hover">Features</a>
-				<a href="#privacy" class="link text-base-content link-hover">Privacy</a>
-				<a href="/app/auth" class="link text-base-content link-hover">Sign In</a>
-
-				<div class="divider my-2"></div> -->
-
+			<nav class="flex flex-col gap-6">
 				<div class="flex flex-col gap-4">
-					<ThemeController expanded={true} />
-					<a href="/app/auth" class="btn w-full btn-primary"> Get Started </a>
+					<div class="flex items-center justify-between rounded-2xl bg-base-200/50 p-4">
+						<span class="font-medium">Theme</span>
+						<ThemeController />
+					</div>
+
+					<a
+						href="/app/auth"
+						class="btn w-full border-none shadow-[0_0_20px_-5px_var(--color-primary)] btn-lg btn-primary"
+					>
+						Get Started
+					</a>
 				</div>
 
-				<div class="divider my-2"></div>
+				<div class="divider my-2 opacity-50"></div>
 
-				<div class="flex flex-col gap-2 text-sm">
-					<a href="/legal/terms-and-conditions" class="link text-base-content/70 link-hover">
-						Terms
+				<div class="flex flex-col gap-4">
+					<h3 class="px-2 text-xs font-bold tracking-wider uppercase opacity-50">Legal</h3>
+					<a
+						href="/legal/terms-and-conditions"
+						class="flex items-center gap-3 rounded-xl p-3 transition-colors hover:bg-base-200/50"
+					>
+						<span class="text-base-content/80">Terms & Conditions</span>
 					</a>
-					<a href="/legal/privacy-policy" class="link text-base-content/70 link-hover">
-						Privacy Policy
+					<a
+						href="/legal/privacy-policy"
+						class="flex items-center gap-3 rounded-xl p-3 transition-colors hover:bg-base-200/50"
+					>
+						<span class="text-base-content/80">Privacy Policy</span>
 					</a>
 				</div>
 			</nav>

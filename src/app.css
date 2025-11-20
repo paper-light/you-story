@@ -5,50 +5,49 @@
 
 @custom-variant dark (&:where([data-theme=DARK], [data-theme=DARK] *));
 
-/* LIGHT — мягкий, воздушный, с сиреневым как основным */
+/* LIGHT — Vibrant, Modern, Clean */
 @plugin 'daisyui/theme' {
 	name: 'LIGHT';
 	default: false;
 	prefersdark: false;
 	color-scheme: 'light';
 
-	/* Базы: очень светлые, без синевы, чуть тёплые */
-	--color-base-100: oklch(99% 0 270);
-	--color-base-200: oklch(97% 0 270);
-	--color-base-300: oklch(93% 0.003 270);
-	--color-base-content: oklch(22% 0.008 270);
+	/* Base: Crisp white with very subtle cool tint */
+	--color-base-100: oklch(99% 0.01 280);
+	--color-base-200: oklch(97% 0.01 280);
+	--color-base-300: oklch(94% 0.02 280);
+	--color-base-content: oklch(20% 0.05 280);
 
-	/* Основной — нежный сиреневый (lilac) */
-	--color-primary: oklch(86% 0.08 325);
-	--color-primary-content: oklch(24% 0.02 325);
+	/* Primary: Electric Indigo */
+	--color-primary: oklch(55% 0.25 280);
+	--color-primary-content: oklch(98% 0.02 280);
 
-	--color-secondary: oklch(88% 0.05 335);
-	--color-secondary-content: oklch(26% 0.02 335);
+	/* Secondary: Vibrant Cyan */
+	--color-secondary: oklch(75% 0.18 190);
+	--color-secondary-content: oklch(20% 0.05 190);
 
-	/* мягкий розовый акцент */
-	--color-accent: oklch(88% 0.07 350);
-	--color-accent-content: oklch(24% 0.02 350);
+	/* Accent: Hot Pink (sparingly used) */
+	--color-accent: oklch(65% 0.25 340);
+	--color-accent-content: oklch(98% 0.02 340);
 
-	/* Нейтрали — спокойные холодноватые серые */
-	--color-neutral: oklch(42% 0.015 260);
-	--color-neutral-content: oklch(96% 0.006 260);
+	/* Neutral: Cool Grays */
+	--color-neutral: oklch(30% 0.05 260);
+	--color-neutral-content: oklch(98% 0.02 260);
 
-	/* Семантика — мягкая, без ядовитой насыщенности */
-	--color-info: oklch(82% 0.09 240);
-	--color-info-content: oklch(24% 0.02 240);
+	--color-info: oklch(70% 0.15 240);
+	--color-info-content: oklch(98% 0.02 240);
 
-	--color-success: oklch(80% 0.07 150);
-	--color-success-content: oklch(22% 0.02 150);
+	--color-success: oklch(75% 0.18 150);
+	--color-success-content: oklch(20% 0.05 150);
 
-	--color-warning: oklch(84% 0.1 85);
-	--color-warning-content: oklch(24% 0.02 85);
+	--color-warning: oklch(85% 0.18 85);
+	--color-warning-content: oklch(20% 0.05 85);
 
-	--color-error: oklch(78% 0.09 25);
-	--color-error-content: oklch(22% 0.02 25);
+	--color-error: oklch(65% 0.22 25);
+	--color-error-content: oklch(98% 0.02 25);
 
-	/* Радиусы и «припудренная» глубина без агрессивных теней */
-	--radius-selector: 1rem;
-	--radius-field: 2rem;
+	--radius-selector: 0.75rem;
+	--radius-field: 1rem;
 	--radius-box: 1rem;
 	--size-selector: 0.25rem;
 	--size-field: 0.25rem;
@@ -57,49 +56,49 @@
 	--noise: 0;
 }
 
-/* DARK — бархатный фон, «свечение» сиреневого, читаемость выше среднего */
+/* DARK — Deep Void, Neon Glows */
 @plugin 'daisyui/theme' {
 	name: 'DARK';
 	default: false;
 	prefersdark: false;
 	color-scheme: 'dark';
 
-	/* Базы: глубокие, слегка холодные */
-	--color-base-100: oklch(17% 0.008 250);
-	--color-base-200: oklch(15% 0.008 250);
-	--color-base-300: oklch(13% 0.008 250);
-	--color-base-content: oklch(96% 0.01 250);
+	/* Base: Deep Void Blue/Purple (not gray) */
+	--color-base-100: oklch(12% 0.04 280);
+	--color-base-200: oklch(10% 0.04 280);
+	--color-base-300: oklch(8% 0.04 280);
+	--color-base-content: oklch(94% 0.02 280);
 
-	/* Основной — подсвеченный lilac, без кислотности */
-	--color-primary: oklch(82% 0.09 325);
-	--color-primary-content: oklch(16% 0.02 325);
+	/* Primary: Neon Indigo */
+	--color-primary: oklch(70% 0.2 280);
+	--color-primary-content: oklch(10% 0.05 280);
 
-	--color-secondary: oklch(78% 0.06 335);
-	--color-secondary-content: oklch(16% 0.02 335);
+	/* Secondary: Neon Cyan */
+	--color-secondary: oklch(80% 0.15 190);
+	--color-secondary-content: oklch(10% 0.05 190);
 
-	/* тёплый розовый акцент на тёмном */
-	--color-accent: oklch(76% 0.1 350);
-	--color-accent-content: oklch(16% 0.02 350);
+	/* Accent: Neon Pink */
+	--color-accent: oklch(70% 0.2 340);
+	--color-accent-content: oklch(10% 0.05 340);
 
-	/* Нейтрали — устойчивые бордеры/текст (чипы/бейджи) */
-	--color-neutral: oklch(40% 0.012 250);
-	--color-neutral-content: oklch(90% 0.006 250);
+	/* Neutral: Deep Cool Grays */
+	--color-neutral: oklch(25% 0.05 260);
+	--color-neutral-content: oklch(94% 0.02 260);
 
-	/* Семантика — мягкая, но читаемая на тёмном */
-	--color-info: oklch(80% 0.09 240);
-	--color-info-content: oklch(16% 0.02 240);
+	--color-info: oklch(75% 0.15 240);
+	--color-info-content: oklch(10% 0.05 240);
 
-	--color-success: oklch(78% 0.07 150);
-	--color-success-content: oklch(16% 0.02 150);
+	--color-success: oklch(75% 0.18 150);
+	--color-success-content: oklch(10% 0.05 150);
 
-	--color-warning: oklch(82% 0.1 85);
-	--color-warning-content: oklch(18% 0.02 85);
+	--color-warning: oklch(85% 0.18 85);
+	--color-warning-content: oklch(10% 0.05 85);
 
-	--color-error: oklch(78% 0.09 25);
-	--color-error-content: oklch(16% 0.02 25);
+	--color-error: oklch(70% 0.22 25);
+	--color-error-content: oklch(10% 0.05 25);
 
-	--radius-selector: 1rem;
-	--radius-field: 2rem;
+	--radius-selector: 0.75rem;
+	--radius-field: 1rem;
 	--radius-box: 1rem;
 	--size-selector: 0.25rem;
 	--size-field: 0.25rem;
