@@ -1,6 +1,6 @@
 import { pb } from './pb';
 
-const DOMAIN = 'youstory.com';
+const DOMAIN = 'cogitosoftware.nl';
 
 export function setPBCookie() {
 	const host = typeof window !== 'undefined' ? window.location.hostname : '';
