@@ -208,5 +208,3 @@ export class MeiliProfileIndexer implements ProfileIndexer {
 		return `${personalFilter} OR ${pairFilters.join(' OR ')}`;
 	}
 }
-
-export const profileIndexer = new MeiliProfileIndexer();

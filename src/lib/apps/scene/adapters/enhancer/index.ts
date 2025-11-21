@@ -1,1 +1,1 @@
-export { openaiSceneEnhancer } from './openaiEnhancer';
+export { OpenAISceneEnhancer } from './openaiEnhancer';

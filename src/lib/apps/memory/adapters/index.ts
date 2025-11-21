@@ -1,2 +1,2 @@
-export { profileIndexer } from './profileIndexer';
-export { eventIndexer } from './eventIndexer';
+export { MeiliProfileIndexer } from './profileIndexer';
+export { MeiliEventIndexerAdapter } from './eventIndexer';

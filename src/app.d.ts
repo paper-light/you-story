@@ -1,5 +1,5 @@
 import type PocketBase from 'pocketbase';
-import type { SubsResponse, UsersResponse } from '$lib';
+import type { SubsResponse, UsersResponse, DI } from '$lib/shared/server';
 
 declare global {
 	namespace App {
@@ -8,6 +8,7 @@ declare global {
 			pb: PocketBase;
 			user: UsersResponse<unknown> | null;
 			sub: SubsResponse<unknown> | null;
+			di: DI;
 		}
 		// interface PageData {}
 		// interface PageState {}

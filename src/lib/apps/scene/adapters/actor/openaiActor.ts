@@ -16,7 +16,7 @@ import {
 export const SCENE_ACTOR_MODEL = LLMS.GROK_4_FAST_NON_REASONING;
 const MAX_RETRIES = 5;
 
-class OpenAISceneActor implements SceneActor {
+export class OpenAISceneActor implements SceneActor {
 	async act(
 		kind: 'friend' | 'story',
 		plan: ScenePlan,
@@ -187,5 +187,3 @@ class OpenAISceneActor implements SceneActor {
 		return messages;
 	}
 }
-
-export const openaiSceneActor = new OpenAISceneActor();

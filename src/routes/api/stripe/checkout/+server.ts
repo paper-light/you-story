@@ -1,7 +1,8 @@
 import { error, json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { stripe, getPriceByLookup } from '$lib/server/stripe';
+import { stripe, getPriceByLookup } from '$lib/shared/server';
 import { env } from '$env/dynamic/public';
+import type Stripe from 'stripe';
 
 export const POST: RequestHandler = async ({ request, locals }) => {
 	if (!locals.user) {
@@ -37,14 +38,12 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 	}
 
 	const price = await getPriceByLookup(priceLookup);
-	if (!price) {
-		error(400, 'Invalid price');
-	}
+	if (!price) error(400, 'Invalid price');
 
 	const customerEmail = user.email;
 	const stripeCustomer = sub?.stripeCustomer;
 
-	const sessionConfig: any = {
+	const sessionConfig: Stripe.Checkout.SessionCreateParams = {
 		line_items: [{ price: price.id, quantity: 1 }],
 		mode: isBundle ? 'payment' : 'subscription',
 		success_url: `${env.PUBLIC_APP_URL}${returnUrl}?session_id={CHECKOUT_SESSION_ID}`,
@@ -64,8 +63,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 	try {
 		const session = await stripe.checkout.sessions.create(sessionConfig);
 		return json({ url: session.url });
-	} catch (err: any) {
+	} catch (err: unknown) {
 		console.error('Stripe checkout error:', err);
-		error(400, `Stripe error: ${err.message}`);
+		error(400, `Stripe error: ${err instanceof Error ? err.message : 'Unknown error'}`);
 	}
 };

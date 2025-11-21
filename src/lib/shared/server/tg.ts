@@ -1,12 +1,16 @@
 import { ENV, PB_EMAIL, PB_PASSWORD } from '$env/static/private';
-import { chatApp } from '$lib/apps/eventChat/app';
+
 import { pb, type ChatsResponse, type UserExpand, type UsersResponse } from '../pb';
 import { nanoid } from '../utils';
+import { getDI } from './di';
 
 const TELEGRAM_API_URL = 'https://api.telegram.org/bot';
 const WEBHOOK_URL = 'https://ys.cogitosoftware.nl';
 
 export async function handleUpdate(characterId: string, update: any) {
+	const di = getDI();
+	const chatApp = di.chat;
+
 	const char = await pb.collection('characters').getOne(characterId);
 
 	const msg = update.message;

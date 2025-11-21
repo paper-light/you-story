@@ -1,1 +1,1 @@
-export { openaiScenePlanner } from './openaiPlanner';
+export { OpenAIScenePlanner } from './openaiPlanner';

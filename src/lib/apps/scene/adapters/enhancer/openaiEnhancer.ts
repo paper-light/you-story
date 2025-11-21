@@ -15,7 +15,7 @@ import { ENHANCE_PROMPT } from './prompts';
 
 const ENHANCER_MODEL = LLMS.GROK_4_FAST;
 
-class OpenAISceneEnhancer implements Enhancer {
+export class OpenAISceneEnhancer implements Enhancer {
 	async enhance(history: OpenAIMessage[], mems: MemporyGetResult): Promise<EnhanceOutput> {
 		const messages: OpenAIMessage[] = [{ role: 'system', content: ENHANCE_PROMPT }];
 
@@ -70,5 +70,3 @@ class OpenAISceneEnhancer implements Enhancer {
 		return EnhanceOutputSchema.parse(JSON.parse(completion.choices[0].message.content || '{}'));
 	}
 }
-
-export const openaiSceneEnhancer = new OpenAISceneEnhancer();

@@ -1,1 +1,1 @@
-export { openaiSceneActor } from './openaiActor';
+export { OpenAISceneActor } from './openaiActor';

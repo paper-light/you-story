@@ -1,6 +1,6 @@
 import { error, json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { stripe } from '$lib/server/stripe';
+import { stripe } from '$lib/shared/server';
 import { env } from '$env/dynamic/public';
 
 export const POST: RequestHandler = async ({ request, locals }) => {
@@ -17,8 +17,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 			return_url: `${env.PUBLIC_APP_URL}${returnUrl}`
 		});
 		return json({ url: portal.url });
-	} catch (err: any) {
+	} catch (err: unknown) {
 		console.error('Stripe portal error:', err);
-		error(400, `Stripe error: ${err.message}`);
+		error(400, `Stripe error: ${err instanceof Error ? err.message : 'Unknown error'}`);
 	}
 };

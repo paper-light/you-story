@@ -27,5 +27,3 @@ export class StoryAppImpl implements StoryApp {
 		return Story.fromResponse(res2, event.order);
 	}
 }
-
-export const storyApp = new StoryAppImpl();

@@ -1,1 +1,1 @@
-export { chatApp } from './usecases';
+export { ChatAppImpl } from './usecases';

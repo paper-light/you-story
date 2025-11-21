@@ -8,6 +8,7 @@ import { PB_EMAIL, PB_PASSWORD } from '$env/static/private';
 import { PUBLIC_PB_URL } from '$env/static/public';
 
 import { Collections, pb, type UserExpand, type UsersResponse } from '$lib';
+import { getDI } from '$lib/shared/server';
 
 const handleLogger: Handle = async ({ event, resolve }) => {
 	console.log(event.request.method, event.url.pathname);
@@ -25,6 +26,7 @@ const handleUserAuth: Handle = async ({ event, resolve }) => {
 	event.locals.user = null;
 	event.locals.sub = null;
 	event.locals.pb = new PocketBase(PUBLIC_PB_URL);
+	event.locals.di = getDI();
 
 	const token = event.cookies.get('pb_token');
 	if (!token) return resolve(event);

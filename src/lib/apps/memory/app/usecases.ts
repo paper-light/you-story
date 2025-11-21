@@ -1,9 +1,5 @@
-import { storyApp } from '$lib/apps/story/app';
 import type { StoryApp } from '$lib/apps/story/core';
-import { characterApp } from '$lib/apps/character/app';
 import type { CharacterApp } from '$lib/apps/character/core';
-
-import { profileIndexer, eventIndexer } from '../adapters';
 import type {
 	MemoryGetCmd,
 	MemoryApp,
@@ -185,8 +181,3 @@ Today is ${new Date().toLocaleDateString()}.
 		return memories;
 	}
 }
-
-Promise.all([profileIndexer.migrate(), eventIndexer.migrate()]).then(() => {
-	console.log('Memory indexers migrated');
-});
-export const memoryApp = new MemoryAppImpl(profileIndexer, eventIndexer, storyApp, characterApp);

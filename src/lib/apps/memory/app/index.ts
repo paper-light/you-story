@@ -1,1 +1,1 @@
-export { memoryApp } from './usecases';
+export { MemoryAppImpl } from './usecases';

@@ -1,6 +1,6 @@
 import { error, json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { stripe, PRICES_MAP, getPriceByLookup } from '$lib/server/stripe';
+import { stripe, getPriceByLookup } from '$lib/shared/server';
 import { env } from '$env/dynamic/private';
 import { pb, Collections } from '$lib';
 import type { SubsRecord } from '$lib/shared/pb/pocketbase-types';
@@ -224,8 +224,8 @@ export const POST: RequestHandler = async ({ request }) => {
 				break;
 			}
 		}
-	} catch (err: any) {
-		console.error('Error processing webhook', err);
+	} catch (err: unknown) {
+		console.error('Error processing webhook', err instanceof Error ? err.message : 'Unknown error');
 		error(500, 'Server Error');
 	}
 

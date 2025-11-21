@@ -2,7 +2,7 @@ import { Collections, pb, type StoryEventExpand, type StoryEventsResponse } from
 
 import { StoryEvent, type StoryEventApp } from '../core';
 
-class StoryEventAppImpl implements StoryEventApp {
+export class StoryEventAppImpl implements StoryEventApp {
 	async get(storyEventId: string): Promise<StoryEvent> {
 		const res: StoryEventsResponse<StoryEventExpand> = await pb
 			.collection(Collections.StoryEvents)
@@ -12,5 +12,3 @@ class StoryEventAppImpl implements StoryEventApp {
 		return StoryEvent.fromResponse(res);
 	}
 }
-
-export const storyEventApp = new StoryEventAppImpl();

@@ -23,7 +23,7 @@ import { type ChatApp, type Notes, type SendUserMessageCmd, Chat } from '../core
 const HISTORY_TOKEN_LIMIT = 2000;
 const MEMORY_TOKEN_LIMIT = 5000;
 
-class ChatAppImpl implements ChatApp {
+export class ChatAppImpl implements ChatApp {
 	constructor(
 		private readonly memoryApp: MemoryApp,
 		private readonly sceneApp: SceneApp
@@ -333,5 +333,3 @@ class ChatAppImpl implements ChatApp {
 		return messages;
 	}
 }
-
-export const chatApp = new ChatAppImpl(memoryApp, sceneApp);

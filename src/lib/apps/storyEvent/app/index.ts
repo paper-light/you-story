@@ -1,1 +1,1 @@
-export { storyEventApp } from './usecases';
+export { StoryEventAppImpl } from './usecases';

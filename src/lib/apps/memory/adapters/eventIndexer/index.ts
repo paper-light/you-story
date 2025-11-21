@@ -1,1 +1,1 @@
-export { eventIndexer } from './meiliEventIndexer';
+export { MeiliEventIndexerAdapter } from './meiliEventIndexer';

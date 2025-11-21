@@ -12,7 +12,7 @@ import type { MemporyGetResult } from '$lib/apps/memory/core';
 export const SCENE_PLANNER_MODEL = LLMS.GROK_4_FAST;
 const MAX_RETRIES = 5;
 
-class OpenAIScenePlanner implements ScenePlanner {
+export class OpenAIScenePlanner implements ScenePlanner {
 	async plan(
 		policy: ScenePolicy,
 		mems: MemporyGetResult,
@@ -99,5 +99,3 @@ class OpenAIScenePlanner implements ScenePlanner {
 			.replaceAll('{maxBeatsPerActor}', policy.maxBeatsPerActor.toString());
 	}
 }
-
-export const openaiScenePlanner = new OpenAIScenePlanner();

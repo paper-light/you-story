@@ -31,7 +31,7 @@ export const EVENT_EMBEDDERS = {
 	} as UserProvidedEmbedder
 };
 
-export class MeiliEventIndexer implements EventIndexer {
+export class MeiliEventIndexerAdapter implements EventIndexer {
 	private readonly client?: MeiliSearch;
 	private readonly index?: Index<EventDoc>;
 
@@ -179,5 +179,3 @@ export class MeiliEventIndexer implements EventIndexer {
 		return memories;
 	}
 }
-
-export const eventIndexer = new MeiliEventIndexer();

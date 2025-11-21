@@ -1,1 +1,1 @@
-export { characterApp } from './usecases';
+export { CharacterAppImpl } from './usecases';

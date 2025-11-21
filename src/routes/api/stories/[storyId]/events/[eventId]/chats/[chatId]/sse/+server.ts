@@ -1,7 +1,6 @@
 import { error, type RequestHandler } from '@sveltejs/kit';
 
 import { withTracing, streamWithFlush } from '$lib/shared/server';
-import { chatApp } from '$lib/apps/eventChat/app';
 
 const handler: RequestHandler = async ({ params, url, locals }) => {
 	const { chatId } = params;
@@ -9,6 +8,8 @@ const handler: RequestHandler = async ({ params, url, locals }) => {
 
 	if (!locals.user) throw error(401, 'Unauthorized');
 	if (!chatId) throw error(400, 'Missing required parameters');
+
+	const chatApp = locals.di.chat;
 
 	const stream = await chatApp.generate({
 		user: locals.user,
