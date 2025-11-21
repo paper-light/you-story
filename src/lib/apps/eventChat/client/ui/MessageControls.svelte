@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Send } from 'lucide-svelte';
+	import { Send, Sparkles } from 'lucide-svelte';
 	import type { ClassValue } from 'svelte/elements';
 
 	import { Button } from '$lib/shared/ui';
@@ -19,8 +19,8 @@
 	let textareaElement: HTMLTextAreaElement | undefined = $state();
 
 	// Constants for autogrow behavior
-	const MIN_HEIGHT = 48; // ~2 lines
-	const MAX_HEIGHT = 192; // ~8 lines
+	const MIN_HEIGHT = 24; // ~1 line
+	const MAX_HEIGHT = 200; // ~10 lines
 
 	const canSend = $derived.by(() => {
 		if (!content.trim()) return false;
@@ -89,30 +89,36 @@
 	}
 </script>
 
-<div class={['flex items-end gap-2', className]}>
-	<textarea
-		bind:this={textareaElement}
-		bind:value={content}
-		onkeydown={handleKeydown}
-		oninput={handleInput}
-		placeholder="Type your message... (Shift+Enter for new line)"
-		class="textarea-bordered textarea flex-1 resize-none"
-		style="min-height: {MIN_HEIGHT}px; max-height: {MAX_HEIGHT}px;"
-		rows="2"
-		disabled={disabled || isSending}
-	></textarea>
-	<Button
-		square
-		onclick={handleSend}
-		size="md"
-		color="primary"
-		disabled={disabled || !canSend}
-		class="shrink-0"
-	>
-		{#if isSending}
-			<span class="loading loading-sm loading-spinner"></span>
-		{:else}
-			<Send class="size-6" />
-		{/if}
-	</Button>
+<div class={['mx-auto w-full max-w-3xl', className]}>
+	<div class="flex items-end gap-2">
+		<textarea
+			bind:this={textareaElement}
+			bind:value={content}
+			onkeydown={handleKeydown}
+			oninput={handleInput}
+			placeholder="Type a message..."
+			class="textarea-bordered textarea w-full resize-none text-base textarea-primary focus:outline-none"
+			style="min-height: {MIN_HEIGHT}px; max-height: {MAX_HEIGHT}px;"
+			rows="1"
+			disabled={disabled || isSending}
+		></textarea>
+
+		<Button
+			circle
+			onclick={handleSend}
+			size="md"
+			color="primary"
+			disabled={disabled || !canSend}
+			class="mb-0.5 shrink-0"
+		>
+			{#if isSending}
+				<span class="loading loading-sm loading-spinner"></span>
+			{:else}
+				<Send class="size-5 {canSend ? 'ml-0.5' : ''}" />
+			{/if}
+		</Button>
+	</div>
+	<div class="mt-2 text-center text-xs text-base-content/40">
+		<p>AI can make mistakes. Treat everything it says as fiction.</p>
+	</div>
 </div>

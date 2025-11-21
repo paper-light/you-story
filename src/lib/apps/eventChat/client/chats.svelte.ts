@@ -9,7 +9,8 @@ class ChatsStore {
 		this._chats = chats;
 	}
 	mergeChats(chats: ChatsResponse[]) {
-		this._chats = [...this._chats, ...chats];
+		const newChats = chats.filter((c) => !this._chats.some((existing) => existing.id === c.id));
+		this._chats = [...this._chats, ...newChats];
 		this._chats.sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime());
 	}
 

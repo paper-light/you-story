@@ -141,107 +141,99 @@
 	</header>
 
 	<!-- Form Content -->
-	<div class="min-h-0 flex-1 space-y-6 overflow-y-auto">
+	<div class="min-h-0 flex-1 space-y-8 overflow-y-auto pr-2">
 		<!-- Avatar Section -->
-		<div class="card bg-base-200">
-			<div class="card-body">
-				<div class="label pb-2">
-					<span class="label-text font-semibold">Avatar</span>
-				</div>
-				<div class="flex flex-col items-center gap-4 sm:flex-row">
-					<!-- Avatar Preview -->
-					<div class="group avatar relative">
-						<div class="w-32 rounded-2xl ring-4 ring-primary ring-offset-2 ring-offset-base-100">
-							<img src={getAvatarFallback(character)} alt="Character avatar" />
-						</div>
-						{#if formAvatarPreview || getAvatarUrl(character)}
-							<button
-								onclick={removeAvatar}
-								class="btn absolute -top-2 -right-2 btn-circle opacity-0 transition-opacity btn-sm btn-error group-hover:opacity-100"
-								title="Remove avatar"
-							>
-								<X class="size-4" />
-							</button>
-						{/if}
+		<div class="flex flex-col gap-4">
+			<span class="label-text font-semibold">Avatar</span>
+			<div class="flex items-center gap-6">
+				<!-- Avatar Preview -->
+				<div class="group avatar relative">
+					<div class="ml-2 w-24 rounded-2xl ring-4 ring-primary ring-offset-2 ring-offset-base-100">
+						<img src={getAvatarFallback(character)} alt="Character avatar" />
 					</div>
-
-					<!-- File Input -->
-					<div class="flex-1">
-						<label
-							for="avatar-input"
-							class="btn w-full cursor-pointer gap-2 btn-outline btn-primary"
+					{#if formAvatarPreview || getAvatarUrl(character)}
+						<button
+							onclick={removeAvatar}
+							class="btn absolute -top-2 -right-2 btn-circle opacity-0 transition-opacity btn-xs btn-error group-hover:opacity-100"
+							title="Remove avatar"
 						>
-							<Upload class="size-4" />
-							<span>{formAvatarFile ? 'Change Avatar' : 'Upload Avatar'}</span>
-						</label>
-						<input
-							type="file"
-							id="avatar-input"
-							accept="image/*"
-							onchange={handleAvatarChange}
-							class="hidden"
-						/>
-						<p class="mt-2 text-xs text-base-content/50">
-							Recommended: Square image, at least 256x256 pixels
-						</p>
-					</div>
+							<X class="size-3" />
+						</button>
+					{/if}
+				</div>
+
+				<!-- File Input -->
+				<div class="flex flex-1 flex-col gap-2">
+					<label
+						for="avatar-input"
+						class="btn w-full gap-2 btn-outline btn-sm btn-primary sm:w-auto"
+					>
+						<Upload class="size-4" />
+						<span>{formAvatarFile ? 'Change Avatar' : 'Upload Avatar'}</span>
+					</label>
+					<input
+						type="file"
+						id="avatar-input"
+						accept="image/*"
+						onchange={handleAvatarChange}
+						class="hidden"
+					/>
+					<p class="text-xs text-base-content/50">
+						Recommended: Square image, at least 256x256 pixels
+					</p>
 				</div>
 			</div>
 		</div>
 
 		<!-- Basic Information -->
-		<div class="card bg-base-200">
-			<div class="card-body space-y-4">
-				<h3 class="mb-2 text-lg font-semibold">Basic Information</h3>
+		<div class="space-y-4">
+			<h3 class="text-lg font-semibold">Basic Information</h3>
 
-				<!-- Name -->
-				<div class="form-control">
-					<label class="label pb-2" for="name-input">
-						<span class="label-text font-medium">Name</span>
-						<span class="label-text-alt text-error">*</span>
-					</label>
-					<input
-						type="text"
-						id="name-input"
-						bind:value={formName}
-						placeholder="Enter character name"
-						class="input-bordered input w-full input-primary"
-					/>
-				</div>
+			<!-- Name -->
+			<div class="form-control w-full">
+				<label class="label pb-2" for="name-input">
+					<span class="label-text font-medium">Name</span>
+					<span class="label-text-alt text-error">*</span>
+				</label>
+				<input
+					type="text"
+					id="name-input"
+					bind:value={formName}
+					placeholder="Enter character name"
+					class="input-bordered input w-full input-primary"
+				/>
+			</div>
 
-				<!-- Age -->
-				<div class="form-control">
-					<label class="label pb-2" for="age-input">
-						<span class="label-text font-medium">Age</span>
-					</label>
-					<input
-						type="number"
-						id="age-input"
-						bind:value={formAge}
-						placeholder="Enter age (optional)"
-						min="0"
-						class="input-bordered input w-full input-primary"
-					/>
-				</div>
+			<!-- Age -->
+			<div class="form-control w-full">
+				<label class="label pb-2" for="age-input">
+					<span class="label-text font-medium">Age</span>
+				</label>
+				<input
+					type="number"
+					id="age-input"
+					bind:value={formAge}
+					placeholder="Enter age (optional)"
+					min="0"
+					class="input-bordered input w-full input-primary"
+				/>
 			</div>
 		</div>
 
 		<!-- Description -->
-		<div class="card bg-base-200">
-			<div class="card-body">
-				<label class="label pb-2" for="description-input">
-					<span class="label-text font-semibold">Description</span>
-				</label>
-				<textarea
-					id="description-input"
-					bind:value={formDescription}
-					placeholder="Write a detailed description of your character..."
-					class="textarea-bordered textarea h-32 w-full resize-none textarea-primary"
-				></textarea>
-				<p class="mt-2 text-xs text-base-content/50">
-					Tell us about your character's personality, background, or any other details.
-				</p>
-			</div>
+		<div class="form-control w-full">
+			<label class="label pb-2" for="description-input">
+				<span class="label-text font-semibold">Description</span>
+			</label>
+			<textarea
+				id="description-input"
+				bind:value={formDescription}
+				placeholder="Write a detailed description of your character..."
+				class="textarea-bordered textarea h-40 w-full resize-none text-base textarea-primary"
+			></textarea>
+			<p class="mt-2 text-xs text-base-content/50">
+				Tell us about your character's personality, background, or any other details.
+			</p>
 		</div>
 	</div>
 

@@ -7,9 +7,10 @@
 	import Messages from '$lib/apps/eventChat/client/ui/Messages.svelte';
 	import MessageControls from '$lib/apps/eventChat/client/ui/MessageControls.svelte';
 	import { Button } from '$lib/shared/ui';
-	import { ArrowLeft, MessageCircle } from 'lucide-svelte';
+	import { ArrowLeft, MessageCircle, Settings2, X } from 'lucide-svelte';
 	import { MessagesRoleOptions } from '$lib';
 	import { charactersStore } from '$lib/apps/character/client';
+	import type { Sender } from '$lib/apps/eventChat/core';
 
 	const storyId = $derived(page.params.storyId);
 	const eventId = $derived(page.params.eventId);
@@ -20,8 +21,8 @@
 
 	const chars = $derived(charactersStore.characters);
 
-	const senders = $derived.by(() => {
-		const senders = chars.map((char) => ({
+	const senders = $derived.by<Sender[]>(() => {
+		const senders: Sender[] = chars.map((char) => ({
 			id: char.id,
 			name: char.name,
 			role: 'ai' as const,
@@ -57,64 +58,105 @@
 			}
 		});
 	}
+
+	let showSidebar = $state(false);
 </script>
 
-<div class="flex h-[calc(100vh-4rem)] gap-6 p-3">
-	<!-- Left Side: Chat Editor -->
-	<div
-		class="hidden w-96 flex-col overflow-hidden rounded-xl border border-base-300 bg-base-100 shadow-sm md:flex"
-	>
+<div class="flex h-[calc(100vh-1rem)] w-full overflow-hidden bg-base-100">
+	<!-- CENTER: Chat Interface -->
+	<div class="relative flex flex-1 flex-col overflow-hidden">
 		<!-- Header -->
-		<div class="flex items-center gap-3 border-b border-base-300 p-6">
-			<Button onclick={handleBack} size="md" style="solid" circle>
-				<ArrowLeft class="size-5" />
-			</Button>
-			<h2 class="text-xl font-semibold text-base-content">Chat Settings</h2>
-		</div>
-
-		<!-- Form Content -->
-		<div class="flex-1 overflow-y-auto p-6">
-			{#if !chat}
-				<div class="flex h-full items-center justify-center">
-					<span class="loading loading-lg loading-spinner"></span>
-				</div>
-			{:else if chat}
-				<ChatController {chat} />
-			{/if}
-		</div>
-	</div>
-
-	<!-- Right Side: Chat Interface -->
-	<div
-		class="flex flex-1 flex-col overflow-hidden rounded-xl border border-base-300 bg-base-100 shadow-sm"
-	>
-		<!-- Chat Header -->
-		<div class="border-b border-base-300 p-6">
+		<div
+			class="flex h-16 shrink-0 items-center justify-between border-b border-base-200 bg-base-100/80 px-4 backdrop-blur-md"
+		>
 			<div class="flex items-center gap-3">
-				<MessageCircle class="size-6 text-primary" />
-				<div>
-					<h3 class="text-lg font-semibold text-base-content">Chat</h3>
-					{#if chat}
-						<p class="text-xs text-base-content/60">Chat #{chat.id.slice(-6)}</p>
-					{/if}
+				<Button onclick={handleBack} style="ghost" circle size="sm" class="lg:hidden">
+					<ArrowLeft class="size-5" />
+				</Button>
+
+				<div class="flex items-center gap-3">
+					<div
+						class="flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary"
+					>
+						<MessageCircle class="size-6" />
+					</div>
+					<div>
+						<h3 class="font-semibold text-base-content">Chat</h3>
+						{#if chat}
+							<p class="text-xs text-base-content/60">#{chat.id.slice(-6)}</p>
+						{/if}
+					</div>
 				</div>
+			</div>
+
+			<div class="flex items-center gap-2">
+				<Button
+					onclick={() => (showSidebar = !showSidebar)}
+					style="ghost"
+					circle
+					size="sm"
+					class="lg:hidden"
+				>
+					<Settings2 class="size-5" />
+				</Button>
 			</div>
 		</div>
 
-		<!-- Chat Messages Area -->
-		<div class="flex-1 overflow-hidden">
+		<!-- Messages Area -->
+		<div class="flex-1 overflow-hidden bg-base-100">
 			{#if !chat}
 				<div class="flex h-full items-center justify-center">
-					<span class="loading loading-lg loading-spinner"></span>
+					<span class="loading loading-lg loading-spinner text-primary"></span>
 				</div>
 			{:else}
 				<Messages {messages} {senders} class="h-full" />
 			{/if}
 		</div>
 
-		<!-- Chat Input Area -->
-		<div class="border-t border-base-300 p-4">
+		<!-- Input Area -->
+		<div class="shrink-0 p-4 pb-8">
 			<MessageControls {messages} onSend={handleSendMessage} disabled={!chat} />
 		</div>
 	</div>
+
+	<!-- RIGHT: Context Sidebar (Desktop) -->
+	<div class="bg-base-50 hidden w-96 shrink-0 flex-col border-l border-base-200 lg:flex">
+		<div class="flex h-16 items-center border-b border-base-200 px-6">
+			<h2 class="font-semibold text-base-content">Chat Settings</h2>
+		</div>
+		<div class="flex-1 overflow-y-auto p-4">
+			{#if chat}
+				<ChatController {chat} />
+			{/if}
+		</div>
+	</div>
+
+	<!-- RIGHT: Context Sidebar (Mobile Drawer) -->
+	{#if showSidebar}
+		<div class="absolute inset-0 z-50 flex lg:hidden">
+			<!-- Backdrop -->
+			<div
+				class="absolute inset-0 bg-black/50 backdrop-blur-sm"
+				onclick={() => (showSidebar = false)}
+				role="button"
+				tabindex="0"
+				onkeydown={(e) => e.key === 'Enter' && (showSidebar = false)}
+			></div>
+
+			<!-- Drawer Content -->
+			<div class="relative ml-auto flex h-full w-96 flex-col bg-base-100 shadow-2xl">
+				<div class="flex h-16 items-center justify-between border-b border-base-200 px-4">
+					<h2 class="font-semibold text-base-content">Chat Settings</h2>
+					<Button onclick={() => (showSidebar = false)} style="ghost" circle size="sm">
+						<X class="size-5" />
+					</Button>
+				</div>
+				<div class="flex-1 overflow-y-auto p-4">
+					{#if chat}
+						<ChatController {chat} />
+					{/if}
+				</div>
+			</div>
+		</div>
+	{/if}
 </div>

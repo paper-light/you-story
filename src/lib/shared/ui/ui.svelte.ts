@@ -11,6 +11,7 @@ const ChatSettingsSchema = z.object({
 
 const UIStateSchema = z.object({
 	paywallOpen: z.boolean().default(false),
+	authWallOpen: z.boolean().default(false),
 	globalSidebarOpen: z.boolean().default(true),
 	feedbackModalOpen: z.boolean().default(false),
 	chatSettings: ChatSettingsSchema.optional().nullable().default(null)
@@ -25,6 +26,7 @@ class UIStore {
 
 	chatSettings = $derived(this._state?.chatSettings);
 	paywallOpen = $derived(this._state?.paywallOpen);
+	authWallOpen = $derived(this._state?.authWallOpen);
 	globalSidebarOpen = $derived(this._state?.globalSidebarOpen);
 	feedbackModalOpen = $derived(this._state?.feedbackModalOpen);
 
@@ -58,6 +60,18 @@ class UIStore {
 	setPaywallOpen(open: boolean) {
 		if (!this._state) return;
 		this._state.paywallOpen = open;
+		this.saveState();
+	}
+
+	// authWallOpen
+	toggleAuthWallOpen() {
+		if (!this._state) return;
+		this._state.authWallOpen = !this._state.authWallOpen;
+		this.saveState();
+	}
+	setAuthWallOpen(open: boolean) {
+		if (!this._state) return;
+		this._state.authWallOpen = open;
 		this.saveState();
 	}
 

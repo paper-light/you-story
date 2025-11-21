@@ -3,11 +3,9 @@
 	import { DateTime } from 'luxon';
 	import { marked } from 'marked';
 	import DOMPurify from 'dompurify';
-	import { Bot } from 'lucide-svelte';
 	import type { ClassValue } from 'svelte/elements';
 
 	import type { MessagesResponse } from '$lib';
-
 	import type { Sender } from '$lib/apps/eventChat/core';
 
 	interface Props {
@@ -50,50 +48,66 @@
 	);
 </script>
 
-<!-- DIVIDER HAS COMPLETELY DIFFERENT UI -->
+<div class={['group flex w-full gap-4 px-4 py-2', incoming ? '' : 'flex-row-reverse', className]}>
+	<!-- Avatar -->
+	<div class="flex shrink-0 flex-col items-center gap-1">
+		{#if showHeader && !charSeq}
+			<div class="avatar">
+				<div class="size-10 overflow-hidden rounded-full ring-1 ring-base-300 ring-offset-1">
+					<img alt={msg.role} src={sender.avatar} class="h-full w-full object-cover" />
+				</div>
+			</div>
+		{:else}
+			<div class="size-10"></div>
+		{/if}
+	</div>
 
-<!-- MESSAGE BUBBLE -->
-<div class={['chat-group', className]}>
-	<div class={['chat', incoming ? 'chat-start' : 'chat-end items-end']}>
-		{#if showHeader}
-			<div class="avatar chat-image">
-				{#if !charSeq}
-					<div class="size-10 overflow-hidden rounded-full">
-						<img alt={msg.role} src={sender.avatar} class="h-full w-full object-cover" />
-					</div>
-				{:else}
-					<span class="size-10 text-sm font-semibold"></span>
+	<!-- Message Content -->
+	<div class={['flex max-w-[85%] flex-col', incoming ? 'items-start' : 'items-end']}>
+		<!-- Header (Name) -->
+		{#if showHeader && !charSeq}
+			<div class="mb-1 flex items-center gap-2 px-1">
+				<span class="text-sm font-semibold text-base-content">
+					{sender?.name || 'Unknown'}
+				</span>
+				{#if formattedTime}
+					<time
+						datetime={msg.created}
+						class="text-xs text-base-content/40 opacity-0 transition-opacity group-hover:opacity-100"
+					>
+						{formattedTime}
+					</time>
 				{/if}
 			</div>
-
-			{#if !charSeq}
-				<div class="chat-header flex items-center space-x-2">
-					<span class="text-sm font-semibold"
-						>{!incoming ? `You (${sender?.name || 'World'})` : sender?.name || 'World'}</span
-					>
-					{#if formattedTime}
-						<time datetime={msg.created} class="text-xs opacity-50">
-							{formattedTime}
-						</time>
-					{/if}
-				</div>
-			{/if}
 		{/if}
 
+		<!-- Bubble -->
 		<div
 			class={[
-				'wrap-break-words chat-bubble prose max-w-[80vw] overflow-hidden rounded-lg p-2',
-				'[&_code]:overflow-wrap-anywhere [&_p]:overflow-wrap-anywhere [&_code]:wrap-break-words [&_p]:wrap-break-words [&_pre]:wrap-break-words [&_code]:whitespace-pre-wrap [&_pre]:mx-auto [&_pre]:max-w-[95%] [&_pre]:overflow-x-hidden [&_pre]:whitespace-pre-wrap'
+				'relative prose overflow-hidden rounded-2xl px-5 py-3 text-base leading-relaxed shadow-sm transition-all',
+				incoming
+					? 'rounded-tl-none bg-base-200 text-base-content'
+					: 'rounded-tr-none bg-primary text-primary-content',
+				'[&_p]:m-0 [&_p]:min-h-[1em]',
+				'[&_a]:underline [&_a]:decoration-current/30 [&_a]:underline-offset-2 hover:[&_a]:decoration-current',
+				'[&_code]:rounded-md [&_code]:bg-base-300/20 [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:font-mono [&_code]:text-sm',
+				'[&_pre]:my-2 [&_pre]:max-w-full [&_pre]:overflow-x-auto [&_pre]:rounded-lg [&_pre]:bg-base-300/20 [&_pre]:p-3'
 			]}
-			class:chat-bubble-base-200={incoming}
-			class:chat-bubble={!incoming}
-			aria-label="Chat message"
 		>
 			{#if isWaitingForResponse}
-				<div class="typing-indicator">
-					<span></span>
-					<span></span>
-					<span></span>
+				<div class="flex items-center gap-1 py-2">
+					<span
+						class="h-2 w-2 animate-bounce rounded-full bg-current opacity-60"
+						style="animation-delay: 0ms"
+					></span>
+					<span
+						class="h-2 w-2 animate-bounce rounded-full bg-current opacity-60"
+						style="animation-delay: 150ms"
+					></span>
+					<span
+						class="h-2 w-2 animate-bounce rounded-full bg-current opacity-60"
+						style="animation-delay: 300ms"
+					></span>
 				</div>
 			{:else}
 				{@html safeHtml}
@@ -101,47 +115,3 @@
 		</div>
 	</div>
 </div>
-
-<style>
-	.typing-indicator {
-		display: flex;
-		align-items: center;
-		gap: 4px;
-		height: 20px;
-		min-width: 50px;
-	}
-
-	.typing-indicator span {
-		width: 8px;
-		height: 8px;
-		border-radius: 50%;
-		background-color: currentColor;
-		opacity: 0.4;
-		animation: typing 1.4s infinite;
-	}
-
-	.typing-indicator span:nth-child(1) {
-		animation-delay: 0s;
-	}
-
-	.typing-indicator span:nth-child(2) {
-		animation-delay: 0.2s;
-	}
-
-	.typing-indicator span:nth-child(3) {
-		animation-delay: 0.4s;
-	}
-
-	@keyframes typing {
-		0%,
-		60%,
-		100% {
-			opacity: 0.4;
-			transform: translateY(0);
-		}
-		30% {
-			opacity: 1;
-			transform: translateY(-10px);
-		}
-	}
-</style>

@@ -32,7 +32,9 @@ class CharactersStore {
 		return pb!.collection('characters').subscribe('*', (e) => {
 			switch (e.action) {
 				case 'create':
-					this._characters = this._characters.filter((c) => !c.id.startsWith('temp-'));
+					this._characters = this._characters.filter(
+						(c) => !c.id.startsWith('temp-') && c.id !== e.record.id
+					);
 					this._characters.unshift(e.record);
 					break;
 				case 'update':

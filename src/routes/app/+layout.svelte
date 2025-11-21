@@ -21,7 +21,7 @@
 	import { userStore, subStore, FeedbackForm } from '$lib/apps/user/client';
 	import { storiesStore } from '$lib/apps/story/client';
 	import { charactersStore } from '$lib/apps/character/client';
-	import { Button, Modal, ThemeController } from '$lib/shared/ui';
+	import { Button, Modal, ThemeController, AuthWall, Paywall } from '$lib/shared/ui';
 
 	import Splash from './Splash.svelte';
 
@@ -55,10 +55,12 @@
 		if (userId) userStore.subscribe(userId);
 		storiesStore.subscribe();
 		charactersStore.subscribe();
+		chatsStore.subscribe();
 		return () => {
 			userStore.unsubscribe();
 			storiesStore.unsubscribe();
 			charactersStore.unsubscribe();
+			chatsStore.unsubscribe();
 		};
 	});
 
@@ -277,11 +279,19 @@
 <Modal
 	class="max-h-[90vh] max-w-[90vw] sm:max-h-[95vh]"
 	backdrop
-	open={uiStore.paywallOpen}
+	open={true}
 	onclose={() => uiStore.setPaywallOpen(false)}
 >
-	<div></div>
-	<!-- <Paywall stripePrices={data?.stripePrices ?? []} /> -->
+	<Paywall stripePrices={(data as any)?.stripePrices ?? []} />
+</Modal>
+
+<Modal
+	class="max-w-md"
+	backdrop
+	open={uiStore.authWallOpen}
+	onclose={() => uiStore.setAuthWallOpen(false)}
+>
+	<AuthWall />
 </Modal>
 
 <Modal

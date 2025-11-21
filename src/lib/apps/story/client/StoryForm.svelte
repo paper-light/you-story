@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { ImagePlus, Trash2, Upload } from 'lucide-svelte';
+	import { ImagePlus, Trash2, Upload, Sparkles } from 'lucide-svelte';
 	import { Button } from '$lib/shared/ui';
 
 	interface Props {
@@ -86,19 +86,19 @@
 	}
 </script>
 
-<div class="space-y-4">
+<div class="space-y-6">
 	<!-- Story Name - Required -->
-	<div class="form-control">
+	<div class="form-control w-full">
 		<label class="label" for={storyNameId}>
 			<span class="label-text font-semibold">Story Name</span>
-			<span class="label-text-alt text-xs text-error">Required</span>
+			<span class="label-text-alt text-error">Required</span>
 		</label>
 		<input
 			type="text"
 			placeholder="My unforgettable adventure"
 			bind:value={name}
 			id={storyNameId}
-			class="input-bordered input w-full"
+			class="input-bordered input w-full input-primary"
 			autocomplete="off"
 			required
 			{disabled}
@@ -106,27 +106,36 @@
 	</div>
 
 	<!-- Cover Image - Compact -->
-	<div class="form-control">
+	<div class="form-control w-full">
 		<label class="label" for={coverInputId}>
 			<span class="label-text font-semibold">Cover Image</span>
-			<span class="label-text-alt text-xs text-base-content/50">Optional</span>
+			<span class="label-text-alt text-base-content/50">Optional</span>
 		</label>
 		{#if hasCover}
-			<div class="relative overflow-hidden rounded-xl border border-base-300">
-				<img src={coverPreview} alt="Story cover" class="h-32 w-full object-cover" />
-				<Button
-					onclick={removeCover}
-					style="ghost"
-					color="error"
-					size="sm"
-					type="button"
-					class="absolute top-2 right-2"
+			<div class="group relative overflow-hidden rounded-xl border border-base-300">
+				<img
+					src={coverPreview}
+					alt="Story cover"
+					class="h-48 w-full object-cover transition-transform group-hover:scale-105"
+				/>
+				<div
+					class="absolute inset-0 flex items-center justify-center bg-black/20 opacity-0 transition-opacity group-hover:opacity-100"
 				>
-					<Trash2 class="size-3" />
-				</Button>
+					<Button
+						onclick={removeCover}
+						style="soft"
+						color="error"
+						size="sm"
+						type="button"
+						class="shadow-lg"
+					>
+						<Trash2 class="mr-2 size-4" />
+						Remove Cover
+					</Button>
+				</div>
 			</div>
 		{:else}
-			<label for={coverInputId} class="btn w-full cursor-pointer gap-2 btn-outline">
+			<label for={coverInputId} class="btn w-full gap-2 border-dashed btn-outline btn-primary">
 				<Upload class="size-4" />
 				<span>Upload Cover</span>
 				<input
@@ -142,48 +151,36 @@
 	</div>
 
 	<!-- Description -->
-	<div class="form-control">
+	<div class="form-control w-full">
 		<label class="label" for={storyDescriptionId}>
 			<span class="label-text font-semibold">Description</span>
-			<span class="label-text-alt text-xs text-base-content/50">Optional</span>
+			<span class="label-text-alt text-base-content/50">Optional</span>
 		</label>
 		<textarea
 			rows={3}
 			placeholder="Briefly describe your story..."
 			bind:value={description}
 			id={storyDescriptionId}
-			class="textarea-bordered textarea w-full"
+			class="textarea-bordered textarea w-full textarea-primary"
 			{disabled}
 		></textarea>
 	</div>
 
 	<!-- Bible Fields - Collapsed -->
-	<details class="collapse-arrow collapse bg-base-200">
-		<summary class="collapse-title font-medium">
-			<span class="flex items-center space-x-2">
-				<svg
-					class="h-5 w-5 text-base-content/70"
-					fill="none"
-					viewBox="0 0 24 24"
-					stroke="currentColor"
-				>
-					<path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						stroke-width="2"
-						d="M12 4v16m8-8H4"
-					/>
-				</svg>
-				<span>Story Bible <span class="text-xs text-base-content/50">(Optional)</span></span>
-			</span>
-		</summary>
-		<div class="collapse-content grid grid-cols-1 gap-6 md:grid-cols-2">
-			<div class="form-control">
+	<div class="collapse-arrow collapse rounded-box border border-base-300 bg-base-100">
+		<input type="checkbox" />
+		<div class="collapse-title flex items-center gap-2 font-medium">
+			<Sparkles class="size-4 text-primary" />
+			Story Bible
+			<span class="ml-auto text-xs font-normal text-base-content/50">Optional</span>
+		</div>
+		<div class="collapse-content space-y-4">
+			<div class="form-control w-full pt-2">
 				<label class="label" for={styleId}>
 					<span class="label-text font-semibold">Style References</span>
 				</label>
 				<textarea
-					rows={4}
+					rows={3}
 					placeholder={'Cinematic noir\nComing-of-age drama'}
 					bind:value={styleText}
 					id={styleId}
@@ -193,12 +190,12 @@
 				></textarea>
 			</div>
 
-			<div class="form-control">
+			<div class="form-control w-full">
 				<label class="label" for={worldFactsId}>
 					<span class="label-text font-semibold">World Facts</span>
 				</label>
 				<textarea
-					rows={4}
+					rows={3}
 					placeholder={'Magic runs on emotions\nThe kingdom floats above the clouds'}
 					bind:value={worldFactsText}
 					id={worldFactsId}
@@ -208,5 +205,5 @@
 				></textarea>
 			</div>
 		</div>
-	</details>
+	</div>
 </div>

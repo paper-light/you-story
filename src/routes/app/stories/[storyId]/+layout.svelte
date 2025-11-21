@@ -21,12 +21,10 @@
 		const story = storiesStore.stories.find((story) => story.id === page.params.storyId);
 		if (story) {
 			storyEventsStore.subscribe();
-			chatsStore.subscribe();
 		}
 
 		return () => {
 			storyEventsStore.unsubscribe();
-			chatsStore.unsubscribe();
 		};
 	});
 </script>
