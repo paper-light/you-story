@@ -1,5 +1,4 @@
 import type { MemporyGetResult } from '$lib/apps/memory/core';
-import { openaiSceneEnhancer, openaiScenePlanner, openaiSceneActor } from '../adapters';
 import {
 	type EnhanceOutput,
 	type Enhancer,
@@ -61,5 +60,3 @@ export class SceneAppImpl implements SceneApp {
 		return stream;
 	}
 }
-
-export const sceneApp = new SceneAppImpl(openaiSceneEnhancer, openaiScenePlanner, openaiSceneActor);

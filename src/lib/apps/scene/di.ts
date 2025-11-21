@@ -1,5 +1,5 @@
 import type { SceneApp } from './core';
-import { SceneAppImpl } from './app/usecases';
+import { SceneAppImpl } from './app';
 import { OpenAISceneEnhancer, OpenAIScenePlanner, OpenAISceneActor } from './adapters';
 
 export const getSceneApp = (): SceneApp => {

@@ -13,9 +13,9 @@ import {
 	type SceneApp,
 	type ScenePlan
 } from '$lib/apps/scene/core';
-import { sceneApp } from '$lib/apps/scene/app';
+
 import { LLMS, TOKENIZERS } from '$lib/shared/server';
-import { memoryApp } from '$lib/apps/memory/app';
+
 import type { MemoryApp, MemporyGetResult } from '$lib/apps/memory/core';
 
 import { type ChatApp, type Notes, type SendUserMessageCmd, Chat } from '../core';
@@ -109,7 +109,7 @@ export class ChatAppImpl implements ChatApp {
 
 			if (sendEvent) {
 				// STREAM
-				const stepStream = sceneApp.actStream(kind, plan, i, memRes, history);
+				const stepStream = this.sceneApp.actStream(kind, plan, i, memRes, history);
 				let accumulatedText = '';
 				const reader = stepStream.getReader();
 				try {
@@ -187,7 +187,7 @@ export class ChatAppImpl implements ChatApp {
 
 		if (profiles.length > 0 || events.length > 0) {
 			try {
-				await memoryApp.put({
+				await this.memoryApp.put({
 					profiles: profiles,
 					events: events
 				});

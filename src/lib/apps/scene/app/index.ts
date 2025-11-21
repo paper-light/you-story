@@ -1,1 +1,1 @@
-export { sceneApp } from './usecases';
+export { SceneAppImpl } from './usecases';
